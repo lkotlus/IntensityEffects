@@ -16,7 +16,7 @@ Irrelevant question.
 
 ## Why?
 
-Finally, a good question! Creating complex lighting effects that go along with instruments, especially drums, becomes exponentially difficult as they become more complex. Want to match a cool drum beat exactly? Previously, you basically couldn't. With this software, the only thing holding you back is your ability to stay on beat.
+Creating complex lighting effects that go along with instruments, especially drums, becomes exponentially difficult as they become more complex. Want to match a cool drum beat exactly? Previously, you basically couldn't. With this software, the only thing holding you back is your ability to stay on beat.
 
 ## How?
 
