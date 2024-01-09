@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Intensity Effects</title>
+    </head>
+    <body>
+        <h1>Intensity Effects</h1>
+
+        <label for="bpm">BPM:</label>
+        <input type="number" id="bpm" name="bpm" value="100" required><br>
+
+        <label for="cycles">Cycles:</label>
+        <input type="number" id="c" name="cycles" value="2" required><br>
+
+        <label for="bpc">BPC:</label>
+        <input type="number" id="bpc" name="bpc" value="4" required><br>
+
+        <label for="tolerance">Tolerance:</label>
+        <input type="number" id="tol" name="tolerance" value="0.07" required><br>
+
+        <label for="startLate">Start Late:</label>
+        <input type="checkbox" id="sl" name="startLate"><br>
+
+        <button id="startBtn">Start</button>
+        <p id="textBox"></p>
+    </body>
+    <script src="./backend.js"></script>
+</html>
