@@ -64,6 +64,7 @@ let isValid = function(b, nc) {
     return false;
 }
 
+// NOTE TO SELF: Binary search is slower due to the nature of this data. A beat is at most 3 beats away from its counterpart in any given cycle, and you remove beats after they're paired. Linear search is a faster average case for the datasets.
 let binSearch = function(b, arr, tol) {
     let start = 0;
     let end = arr.length-1;
