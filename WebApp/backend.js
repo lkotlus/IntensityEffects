@@ -194,7 +194,7 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         beats: []
     }
 
-    // Code that is 6 levels nested (throwing up in my mouth right now)
+    // Code that is 5 levels nested (throwing up in my mouth right now)
     // |
     // |
     // |
