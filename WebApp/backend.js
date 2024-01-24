@@ -3,6 +3,7 @@ class Beat {
     // Constructor function, takes in a time t and a cycle number c
     constructor(t, c) {
         this.t = t;
+        this.fullTime = [t];
         this.occ = [c];
         this.bpm = NaN;
         this.offset = NaN;
@@ -18,11 +19,23 @@ class Beat {
     join(b2) {
         this.sync(b2);
         this.occ = this.occ.concat(b2.occ);
+        this.fullTime = this.fullTime.concat(b2.fullTime);
+    }
+
+    // Splits beats into individual components
+    split() {
+        let returnVals = [];
+
+        for (let i = 0; i < this.occ.length; i++) {
+            returnVals.push(new Beat(this.fullTime[i], this.occ[i]));
+        }
+
+        return returnVals;
     }
 
     // Prints a description of the beat (for debugging)
     print() {
-        console.log(`Time interval ${this.t} during cycle(s) ${this.occ}`);
+        console.log(`Time interval ${this.t} during cycle(s) ${this.occ.sort((a, b) => a - b)}`);
     }
 }
 
@@ -53,18 +66,22 @@ let isClose = function(b1, b2, tol) {
 }
 
 // Checks the uniformity of a beats occurences
-let isUniform = function(b, nc) {
+let isUniform = function(occ, nc) {
+    if (occ.length === 1) {
+        return true;
+    }
+
     // Length variable
-    let len = b.occ[1] - b.occ[0];
+    let len = occ[1] - occ[0];
 
     
-    for (let i = 1; i < b.occ.length; i++) {
-        if (b.occ[i] - b.occ[i-1] !== len) {
+    for (let i = 1; i < occ.length; i++) {
+        if (occ[i] - occ[i-1] !== len) {
             return false;
         }
     }
 
-    if (((nc - b.occ[b.occ.length-1]) + b.occ[0]) !== len) {
+    if (((nc - occ[occ.length-1]) + occ[0]) !== len) {
         return false;
     }
 
@@ -72,7 +89,7 @@ let isUniform = function(b, nc) {
 }
 
 let isValid = function(b, nc) {
-    if (nc % b.occ.length === 0 && isUniform(b, nc)) {
+    if (nc % b.occ.length === 0 && isUniform(b.occ.sort((a, b) => a - b), nc)) {
         return true;
     }
     
@@ -112,6 +129,21 @@ let binSearch = function(b, arr, tol) {
     }
 
     return false;
+}
+
+// Quickly getting the insert location for a beat such that they are in order
+let insertLoaction = function(b, arr) {
+    if (b.t < arr[0].t) {
+        return 0;
+    }
+
+    for (let i = 1; i < arr.length; i++) {
+        if (b.t > arr[i-1].t && b.t < arr[i].t) {
+            return i;
+        }
+    }
+
+    return arr.length;
 }
 
 let press = function(cl, startTime, e) {
@@ -245,8 +277,23 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
     for (let i = 0; i < beats.length; i++) {
         for (let j = 0; j < beats[i].length; j++) {
             beatsObj.beats.push(beats[i][j]);
-            beats[i][j].print();
         }
+    }
+
+    // This almost works.
+    for (let i = 0; i < beatsObj.beats.length; i++) {
+        if (!isValid(beatsObj.beats[i], beatsObj.c)) {
+            insertableBeats = beatsObj.beats[i].split();
+            beatsObj.beats.splice(i, 1);
+
+            for (let j = 0; j < insertableBeats.length; j++) {
+                beatsObj.beats.splice(insertLoaction(insertableBeats[j], beatsObj.beats), 0, insertableBeats[j]);
+            }
+        }
+    }
+
+    for (let i = 0; i < beatsObj.beats.length; i++) {
+        beatsObj.beats[i].print();
     }
 }
 
