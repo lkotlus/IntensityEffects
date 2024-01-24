@@ -52,8 +52,23 @@ let isClose = function(b1, b2, tol) {
     return Math.abs(b1.t - b2.t) < tol;
 }
 
+// Checks the uniformity of a beats occurences
 let isUniform = function(b, nc) {
-    return;
+    // Length variable
+    let len = b.occ[1] - b.occ[0];
+
+    
+    for (let i = 1; i < b.occ.length; i++) {
+        if (b.occ[i] - b.occ[i-1] !== len) {
+            return false;
+        }
+    }
+
+    if (((nc - b.occ[b.occ.length-1]) + b.occ[0]) !== len) {
+        return false;
+    }
+
+    return true;
 }
 
 let isValid = function(b, nc) {
