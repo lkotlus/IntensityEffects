@@ -246,7 +246,7 @@ let record = function(e) {
 
             // Recreating that event listener for the start button
             document.getElementById('startBtn').addEventListener('click', (e) => {
-                document.getElementById("settingsDiv").innerHTML = "";
+                document.getElementById("outputDiv").innerHTML = "";
                 beats = [];
                 document.getElementById('textBox').textContent = "Press enter to start recording...";
                 document.addEventListener('keydown', record);
@@ -332,7 +332,7 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
     }
 
     // Getting the settings div ready to go, because it's about to get used a lot
-    let settingsDiv = document.getElementById("settingsDiv");
+    let outputDiv = document.getElementById("outputDiv");
 
     // Looping through things to calculate BPM and offset. Also doing DOM manipulation directly afterwards.
     // NOTE TO SELF: literally never go into front end development, you are very bad at it. (W3Schools CSS tutorial site web request count for the below code: 9999999999999999999)
@@ -340,6 +340,10 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         // Setting the BPM and offset for the current beat
         beatsObj.beats[i].setBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
         beatsObj.beats[i].setOffset(beatsObj.cl, beatsObj.c);
+
+        let newWrapper = document.createElement("div");
+        newWrapper.id = `beat${i+1}Wrapper`;
+        newWrapper.classList.add("beatWrapper");
 
         // Creating a new button for the collapsible of the current beat
         let newButton = document.createElement("button");
@@ -352,14 +356,12 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         newTextDiv.textContent = `BPM: ${beatsObj.beats[i].bpm}, Offset: ${beatsObj.beats[i].offset}`;
         newTextDiv.style.display = "none";
         newTextDiv.id = `beat${i+1}Div`;
-
-        // Also a break tag
-        let newBreak = document.createElement("br");
+        newTextDiv.classList.add("textOutputDiv");
 
         // Appending all of the above elements to the settings div
-        settingsDiv.appendChild(newButton);
-        settingsDiv.appendChild(newTextDiv);
-        settingsDiv.appendChild(newBreak);
+        newWrapper.appendChild(newButton);
+        newWrapper.appendChild(newTextDiv);
+        outputDiv.appendChild(newWrapper);
 
         // Creating an event listener for the button
         document.getElementById(`beat${i+1}Button`).addEventListener("click", function() {

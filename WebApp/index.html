@@ -3,33 +3,53 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style src="./style.css"></style>
+        <link rel="stylesheet" href="./style.css">
         <title>Intensity Effects</title>
     </head>
     <body>
         <h1>Intensity Effects</h1>
 
-        <label for="bpm">BPM:</label>
-        <input type="number" id="bpm" name="bpm" value="100" required><br>
+        <div id="settingsWrapper">
+            <button type="button" id="settingsButton">Settings</button>
+            <div id="settingsDiv" class="content">
+                <label for="bpm">BPM:</label>
+                <input type="number" id="bpm" name="bpm" value="100" required>
 
-        <label for="cycles">Cycles:</label>
-        <input type="number" id="c" name="cycles" value="2" required><br>
+                <label for="cycles">Cycles:</label>
+                <input type="number" id="c" name="cycles" value="2" required>
 
-        <label for="bpc">BPC:</label>
-        <input type="number" id="bpc" name="bpc" value="4" required><br>
+                <label for="bpc">BPC:</label>
+                <input type="number" id="bpc" name="bpc" value="4" required>
 
-        <label for="tolerance">Tolerance:</label>
-        <input type="number" id="tol" name="tolerance" value="70" required><br>
+                <label for="tolerance">Tolerance:</label>
+                <input type="number" id="tol" name="tolerance" value="70" required>
 
-        <label for="startLate">Start Late:</label>
-        <input type="checkbox" id="sl" name="startLate"><br>
+                <label for="startLate">Start Late:</label>
+                <input type="checkbox" id="sl" name="startLate">
+            </div>
+        </div>
 
-        <button id="startBtn">Start</button>
-        <p id="textBox"></p>
+        <div id="startButtonDiv">
+            <button id="startBtn">Start</button>
+            <p id="textBox"></p>
+        </div>
 
-        <div id="settingsDiv">
+        <div id="outputDiv">
+            <h3>Output</h3>
             <!-- Where the settings go -->
         </div>
     </body>
+    <script>
+        document.getElementById("settingsButton").addEventListener("click", function() {
+            let div = document.getElementById("settingsDiv");
+
+            if (div.style.display === "block") {
+                div.style.display = "none";
+            }
+            else {
+                div.style.display = "block";
+            }
+        })
+    </script>
     <script src="./backend.js"></script>
 </html>
