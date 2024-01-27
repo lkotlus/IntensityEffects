@@ -112,15 +112,18 @@ let isValid = function(b, nc) {
     return false;
 }
 
-// NOTE TO SELF: Binary search is slower due to the nature of this data. A beat is at most 3 beats away from its counterpart in any given cycle, and you remove beats after they're paired. Linear search is a faster average case for the datasets.
+// Binary search implementation with isClose()
 let binSearch = function(b, arr, tol) {
+    // Setting up variables for start, end, and mid
     let start = 0;
     let end = arr.length-1;
     let mid = Math.floor((end+start)/2);
 
+    // Lil' while loop with the base case
     while (start <= end) {
+        // Checking for if we might have found it yet
         if (end-start <= 2) {
-            console.log("HEY");
+            // If so, check each available location
             if (isClose(b, arr[mid], tol)) {
                 return mid;
             }
@@ -131,9 +134,11 @@ let binSearch = function(b, arr, tol) {
                 return end;
             }
 
+            // If we didn't find it, return false
             return false;
         }
 
+        // Recalculating things for the next iteration
         if (b.t < arr[mid].t) {
             end = mid;
             mid = Math.floor((end+start)/2);
@@ -144,29 +149,42 @@ let binSearch = function(b, arr, tol) {
         }
     }
 
+    // Returning false if we didn't find anything
     return false;
 }
 
 // Quickly getting the insert location for a beat such that they are in order
 let insertLoaction = function(b, arr) {
+    // Base case schenaniganery
     if (b.t < arr[0].t) {
         return 0;
     }
 
+    // Loop through the array
     for (let i = 1; i < arr.length; i++) {
+        // If you find the sweet spot...
         if (b.t > arr[i-1].t && b.t < arr[i].t) {
+            // Return it like an obedient boy
             return i;
         }
     }
 
+    // If you never find the spot, return the length of the array
     return arr.length;
 }
 
+// Records a press
 let press = function(cl, startTime, e) {
+    // If a shift or enter is pressed...
     if (e.keyCode === 16 || e.keyCode === 13) {
+        // Get the time it was pressed at and calculate the current cycle
         let t = Date.now() - startTime;
         let currentCycle = Math.floor((t+1)/cl);
+
+        // Print stuff out for Logan, because he's a special boy who needs to see things in the console like a nerd
         console.log(`Time: ${t}\nCycle: ${currentCycle}`);
+        
+        // And finally create and append a new beat to the beats array
         beats[currentCycle].push(new Beat(t, currentCycle));
     }
 }
@@ -313,41 +331,51 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         }
     }
 
-    // Printing stuff for nerds who use the console
-    for (let i = 0; i < beatsObj.beats.length; i++) {
-        beatsObj.beats[i].setBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
-        beatsObj.beats[i].setOffset(beatsObj.cl, beatsObj.c);
-        beatsObj.beats[i].print();
-    }
-
+    // Getting the settings div ready to go, because it's about to get used a lot
     let settingsDiv = document.getElementById("settingsDiv");
 
-    // Putting things in a user friendly area (TF?)
+    // Looping through things to calculate BPM and offset. Also doing DOM manipulation directly afterwards.
+    // NOTE TO SELF: literally never go into front end development, you are very bad at it. (W3Schools CSS tutorial site web request count for the below code: 9999999999999999999)
     for (let i = 0; i < beatsObj.beats.length; i++) {
+        // Setting the BPM and offset for the current beat
+        beatsObj.beats[i].setBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
+        beatsObj.beats[i].setOffset(beatsObj.cl, beatsObj.c);
+
+        // Creating a new button for the collapsible of the current beat
         let newButton = document.createElement("button");
         newButton.textContent = `Beat ${i+1}`;
         newButton.classList.add("collapsible");
         newButton.id = `beat${i+1}Button`;
 
+        // Creating a new text div for the collapsible of the current beat
         let newTextDiv = document.createElement("div");
         newTextDiv.textContent = `BPM: ${beatsObj.beats[i].bpm}, Offset: ${beatsObj.beats[i].offset}`;
         newTextDiv.style.display = "none";
         newTextDiv.id = `beat${i+1}Div`;
 
+        // Also a break tag
         let newBreak = document.createElement("br");
 
+        // Appending all of the above elements to the settings div
         settingsDiv.appendChild(newButton);
         settingsDiv.appendChild(newTextDiv);
         settingsDiv.appendChild(newBreak);
 
+        // Creating an event listener for the button
         document.getElementById(`beat${i+1}Button`).addEventListener("click", function() {
+            // Getting the respective text div
             let textDiv = document.getElementById(`beat${i+1}Div`);
+            // Toggling the button active
             this.classList.toggle("active");
 
+            // If the text is displayed...
             if (textDiv.style.display === "block") {
+                // Hide it
                 textDiv.style.display = "none";
             }
+            // Otherwise...
             else {
+                // Display it
                 textDiv.style.display = "block";
             }
         })
