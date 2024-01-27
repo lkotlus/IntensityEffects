@@ -246,7 +246,7 @@ let record = function(e) {
 
             // Recreating that event listener for the start button
             document.getElementById('startBtn').addEventListener('click', (e) => {
-                document.getElementById("outputDiv").innerHTML = "";
+                document.getElementById("outputDiv").innerHTML = "<h2>Output</h2>";
                 beats = [];
                 document.getElementById('textBox').textContent = "Press enter to start recording...";
                 document.addEventListener('keydown', record);
