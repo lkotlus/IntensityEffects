@@ -3,13 +3,14 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style src="./style.css"></style>
         <title>Intensity Effects</title>
     </head>
     <body>
         <h1>Intensity Effects</h1>
 
         <label for="bpm">BPM:</label>
-        <input type="number" id="bpm" name="bpm" value="74" required><br>
+        <input type="number" id="bpm" name="bpm" value="100" required><br>
 
         <label for="cycles">Cycles:</label>
         <input type="number" id="c" name="cycles" value="2" required><br>
@@ -25,6 +26,13 @@
 
         <button id="startBtn">Start</button>
         <p id="textBox"></p>
+
+        <div id="settingsDiv">
+            <!-- <button type="button" class="collapsible">Open Collapsible</button>
+            <div class="content">
+                <p>asdfasdfasdfasdf</p>
+            </div> -->
+        </div>
     </body>
     <script src="./backend.js"></script>
 </html>

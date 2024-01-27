@@ -24,18 +24,34 @@ class Beat {
 
     // Splits beats into individual components
     split() {
+        // Setting up an array of return values
         let returnVals = [];
 
+        // Looping through each occurence
         for (let i = 0; i < this.occ.length; i++) {
+            // Appending a new beat to the returnVals array
             returnVals.push(new Beat(this.fullTime[i], this.occ[i]));
         }
 
+        // Returning the array
         return returnVals;
+    }
+
+    // Sets the BPM for the beat
+    setBPM(baseBPM, nc, bpc) {
+        this.bpm = (baseBPM * this.occ.length)/(bpc * nc);
+    }
+
+    // Sets the offset for the beat
+    setOffset(baseLen, nc) {
+        let fullLen = baseLen * (nc/this.occ.length);
+        let ratio = this.fullTime[0]/fullLen;
+        this.offset = 360 - (360 * ratio);
     }
 
     // Prints a description of the beat (for debugging)
     print() {
-        console.log(`Time interval ${this.t} during cycle(s) ${this.occ.sort((a, b) => a - b)}`);
+        console.log(`Time interval ${this.t} during cycle(s) ${this.occ.sort((a, b) => a - b)}. BPM: ${this.bpm}, offset: ${this.offset}`);
     }
 }
 
@@ -212,6 +228,7 @@ let record = function(e) {
 
             // Recreating that event listener for the start button
             document.getElementById('startBtn').addEventListener('click', (e) => {
+                document.getElementById("settingsDiv").innerHTML = "";
                 beats = [];
                 document.getElementById('textBox').textContent = "Press enter to start recording...";
                 document.addEventListener('keydown', record);
@@ -280,20 +297,60 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         }
     }
 
-    // This almost works.
+    // This works! Loop through each beat...
     for (let i = 0; i < beatsObj.beats.length; i++) {
+        // Check if it's valid...
         if (!isValid(beatsObj.beats[i], beatsObj.c)) {
+            // If not, split the beat
             insertableBeats = beatsObj.beats[i].split();
+            // Splice it up
             beatsObj.beats.splice(i, 1);
 
+            // And insert the seperate beats frfr
             for (let j = 0; j < insertableBeats.length; j++) {
                 beatsObj.beats.splice(insertLoaction(insertableBeats[j], beatsObj.beats), 0, insertableBeats[j]);
             }
         }
     }
 
+    // Printing stuff for nerds who use the console
     for (let i = 0; i < beatsObj.beats.length; i++) {
+        beatsObj.beats[i].setBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
+        beatsObj.beats[i].setOffset(beatsObj.cl, beatsObj.c);
         beatsObj.beats[i].print();
+    }
+
+    let settingsDiv = document.getElementById("settingsDiv");
+
+    // Putting things in a user friendly area (TF?)
+    for (let i = 0; i < beatsObj.beats.length; i++) {
+        let newButton = document.createElement("button");
+        newButton.textContent = `Beat ${i+1}`;
+        newButton.classList.add("collapsible");
+        newButton.id = `beat${i+1}Button`;
+
+        let newTextDiv = document.createElement("div");
+        newTextDiv.textContent = `BPM: ${beatsObj.beats[i].bpm}, Offset: ${beatsObj.beats[i].offset}`;
+        newTextDiv.style.display = "none";
+        newTextDiv.id = `beat${i+1}Div`;
+
+        let newBreak = document.createElement("br");
+
+        settingsDiv.appendChild(newButton);
+        settingsDiv.appendChild(newTextDiv);
+        settingsDiv.appendChild(newBreak);
+
+        document.getElementById(`beat${i+1}Button`).addEventListener("click", function() {
+            let textDiv = document.getElementById(`beat${i+1}Div`);
+            this.classList.toggle("active");
+
+            if (textDiv.style.display === "block") {
+                textDiv.style.display = "none";
+            }
+            else {
+                textDiv.style.display = "block";
+            }
+        })
     }
 }
 
