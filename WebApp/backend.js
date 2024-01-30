@@ -1,8 +1,9 @@
 // A class to specify each beat
 class Beat {
     // Constructor function, takes in a time t and a cycle number c
-    constructor(t, c) {
+    constructor(t, c, n) {
         this.t = t;
+        this.names = [n];
         this.fullTime = [t];
         this.occ = [c];
         this.bpm = NaN;
@@ -16,10 +17,15 @@ class Beat {
     }
 
     // Joins two beats (syncs the time and concatonates the cycles)
-    join(b2) {
+    join(b2, cl) {
         this.sync(b2);
         this.occ = this.occ.concat(b2.occ);
+        this.names = this.names.concat(b2.names);
         this.fullTime = this.fullTime.concat(b2.fullTime);
+
+        for (let i = 0; i < this.names.length; i++) {
+            document.getElementById(this.names[i]).style.left = `${100*(this.t/cl)}%`
+        }
     }
 
     // Splits beats into individual components
@@ -30,7 +36,7 @@ class Beat {
         // Looping through each occurence
         for (let i = 0; i < this.occ.length; i++) {
             // Appending a new beat to the returnVals array
-            returnVals.push(new Beat(this.fullTime[i], this.occ[i]));
+            returnVals.push(new Beat(this.fullTime[i], this.occ[i], this.names[i]));
         }
 
         // Returning the array
@@ -174,7 +180,7 @@ let insertLoaction = function(b, arr) {
 }
 
 // Records a press
-let press = function(cl, startTime, e) {
+let press = function(cl, startTime, i, e) {
     // If a shift or enter is pressed...
     if (e.keyCode === 16 || e.keyCode === 13) {
         // Get the time it was pressed at and calculate the current cycle
@@ -188,11 +194,12 @@ let press = function(cl, startTime, e) {
         let DOMCycle = document.getElementById(`cycle${currentCycle+1}`);
         let newBeatDot = document.createElement('span');
         newBeatDot.classList.add('beatDot');
+        newBeatDot.id = `beat${i}`;
         newBeatDot.style.left = `${(relativeT/cl) * 100}%`;
         DOMCycle.appendChild(newBeatDot);
         
         // And finally create and append a new beat to the beats array
-        beats[currentCycle].push(new Beat(t, currentCycle));
+        beats[currentCycle].push(new Beat(t, currentCycle, newBeatDot.id));
     }
 }
 
@@ -242,15 +249,18 @@ let record = function(e) {
         // Doing timey wimey stuff
         let startTime = Date.now();
         let endTime = startTime + cl;
+        let i = 1;
 
         // Doing a key press so the "enter" input becomes a beat (only if start late is false)
         if (!sl) {
-            press(cl, startTime, {keyCode: 13});
+            press(cl, startTime, i, {keyCode: 13});
+            i++
         }
 
         // Handler function for an event listener (see comment below)
         let handler = (e) => {
-            press(cl, startTime, e);
+            press(cl, startTime, i, e);
+            i++;
         }
 
         // Event listener for presses (see comment above)
@@ -323,7 +333,7 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
                     // Why is 0 falsey even though it is a normal real integer with many normal real integer applications? Because JavaScript.
                     if (binResults !== false) {
                         // Join the two beats
-                        beats[currentCycle][beat].join(beats[otherCycle][binResults]);
+                        beats[currentCycle][beat].join(beats[otherCycle][binResults], beatsObj.cl);
                         // And remove the other beat from it's current array
                         beats[otherCycle].splice(binResults, 1);
                     }
