@@ -45,14 +45,14 @@ class Beat {
 
     // Sets the BPM for the beat
     setBPM(baseBPM, nc, bpc) {
-        this.bpm = (baseBPM * this.occ.length)/(bpc * nc);
+        this.bpm = ((baseBPM * this.occ.length)/(bpc * nc)).toFixed(2);
     }
 
     // Sets the offset for the beat
     setOffset(baseLen, nc) {
         let fullLen = baseLen * (nc/this.occ.length);
         let ratio = this.fullTime[0]/fullLen;
-        this.offset = 360 * ratio;
+        this.offset = (360 * ratio).toFixed(2);
     }
 
     // Prints a description of the beat (for debugging)

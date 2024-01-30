@@ -53,7 +53,7 @@ h2 {
 }
 
 #beatLineWrappersWrapper {
-    width: 90%
+    width: 95%
 }
 
 .beatLineWrapper + .beatLineWrapper {
@@ -69,16 +69,16 @@ h2 {
 .beatLine {
     position: absolute;
     width: 100%;
-    border: 0.22vh solid #a8a8a8;
+    border: 1px solid #a8a8a8;
     border-radius: 5px;
 }
 
 .beatDot {
     position: absolute;
-    bottom: 15%;
     display: flex;
-    height: 0.7vw;
-    width: 0.7vw;
+    transform: translateY(40%);
+    height: 10px;
+    width: 10px;
     background-color: black;
     border-radius: 50%;
 }
