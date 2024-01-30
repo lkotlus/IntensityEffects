@@ -180,9 +180,16 @@ let press = function(cl, startTime, e) {
         // Get the time it was pressed at and calculate the current cycle
         let t = Date.now() - startTime;
         let currentCycle = Math.floor((t+1)/cl);
+        let relativeT = t - (cl*currentCycle);
 
         // Print stuff out for Logan, because he's a special boy who needs to see things in the console like a nerd
         console.log(`Time: ${t}\nCycle: ${currentCycle}`);
+        // Putting stuff in the DOM? FOR THE USER?????
+        let DOMCycle = document.getElementById(`cycle${currentCycle+1}`);
+        let newBeatDot = document.createElement('span');
+        newBeatDot.classList.add('beatDot');
+        newBeatDot.style.left = `${(relativeT/cl) * 100}%`;
+        DOMCycle.appendChild(newBeatDot);
         
         // And finally create and append a new beat to the beats array
         beats[currentCycle].push(new Beat(t, currentCycle));
@@ -203,6 +210,22 @@ let record = function(e) {
         let bpc = Number(document.getElementById('bpc').value);
         let tol = Number(document.getElementById('tol').value);
         let sl = document.getElementById('sl').checked;
+
+        // Adding the beat lines;
+        for (let i = 0; i < c; i++) {
+            // Creating a new beat line wrapper div
+            let newBeatLine = document.createElement('div');
+            newBeatLine.classList.add('beatLineWrapper');
+            newBeatLine.id = `cycle${i+1}`;
+
+            // Creating the actual line
+            let newBeatHr = document.createElement('hr');
+            newBeatHr.classList.add('beatLine');
+
+            // Appending children
+            newBeatLine.appendChild(newBeatHr);
+            document.getElementById('beatLineWrappersWrapper').appendChild(newBeatLine);
+        }
 
         // Beat interval is 60 divided by beats per minute
         let bi = (60/bpm)*1000;
@@ -247,6 +270,7 @@ let record = function(e) {
             // Recreating that event listener for the start button
             document.getElementById('startBtn').addEventListener('click', (e) => {
                 document.getElementById("outputDiv").innerHTML = "<h2>Output</h2>";
+                document.getElementById("beatLineWrappersWrapper").innerHTML = "";
                 beats = [];
                 document.getElementById('textBox').textContent = "Press enter to start recording...";
                 document.addEventListener('keydown', record);
