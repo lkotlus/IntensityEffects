@@ -308,6 +308,8 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         bi: bi,
         cl: cl,
         tol: tol,
+        linesHTML: "",
+        outputHTML: "",
         beats: []
     }
 
@@ -416,7 +418,13 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
             }
         })
     }
+
+    // Saving HTML so importing is easy
+    beatsObj.linesHTML = document.getElementById('beatLineWrappersWrapper').innerHTML;
+    beatsObj.outputHTML = document.getElementById('outputDiv').innerHTML;
 }
+
+let beatsObj = {};
 
 // Start button event listener
 document.getElementById('startBtn').addEventListener('click', (e) => {
@@ -426,4 +434,70 @@ document.getElementById('startBtn').addEventListener('click', (e) => {
     document.getElementById('textBox').textContent = "Press enter to start recording...";
     // Adds a listener for keystrokes
     document.addEventListener('keydown', record);
-}, /*Only executes once*/ {once: true});
+}, /*Only executes once*/ {once: true})
+
+// Exporting stuff
+document.getElementById('exportButton').addEventListener('click', (e) => {
+    // File contents are JSON text of the beatsObj
+    let fileContents = JSON.stringify(beatsObj);
+
+    // Creating a Blob object as the file
+    let file = new Blob([fileContents], {type: 'json'});
+    
+    // Stolen code that makes stuff work (thank you stack overflow)
+    let a = document.createElement("a"),
+    url = URL.createObjectURL(file);
+    a.href = url;
+    a.download = 'sickBeat.json';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function() {
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);  
+    }, 0); 
+})
+
+// Importing stuff
+document.getElementById('importButton').addEventListener('change', async (e) => {
+    // Awaiting the imported file contents
+    let contents = await e.target.files[0].text();
+    // Parsing as JSON to an object
+    let beatsObj = JSON.parse(contents);
+    // Dev stuff, you wouldn't understand
+    console.log(beatsObj);
+    
+    // Beat lines HTML
+    document.getElementById('beatLineWrappersWrapper').innerHTML = beatsObj.linesHTML;
+    // Output HTML
+    document.getElementById('outputDiv').innerHTML = beatsObj.outputHTML;
+    
+    // Entering the proper settings
+    document.getElementById('bpm').value = beatsObj.bpm;
+    document.getElementById('c').value = beatsObj.c;
+    document.getElementById('bpc').value = beatsObj.bpc;
+    document.getElementById('tol').value = beatsObj.tol;
+    document.getElementById('sl').checked = beatsObj.sl;
+
+    // Getting all the output collapsibles
+    let allOutputButtons = document.querySelectorAll('.collapsible');
+    // Adding the event listener to all of them
+    for (let i = 0; i < allOutputButtons.length; i++) {
+        allOutputButtons[i].addEventListener("click", function() {
+            // Getting the respective text div
+            let textDiv = document.getElementById(`beat${i+1}Div`);
+            // Toggling the button active
+            this.classList.toggle("active");
+
+            // If the text is displayed...
+            if (textDiv.style.display === "block") {
+                // Hide it
+                textDiv.style.display = "none";
+            }
+            // Otherwise...
+            else {
+                // Display it
+                textDiv.style.display = "block";
+            }
+        })
+    }
+})
