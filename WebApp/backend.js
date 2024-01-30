@@ -52,7 +52,7 @@ class Beat {
     setOffset(baseLen, nc) {
         let fullLen = baseLen * (nc/this.occ.length);
         let ratio = this.fullTime[0]/fullLen;
-        this.offset = 360 - (360 * ratio);
+        this.offset = 360 * ratio;
     }
 
     // Prints a description of the beat (for debugging)
