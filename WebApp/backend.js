@@ -179,6 +179,81 @@ let insertLoaction = function(b, arr) {
     return arr.length;
 }
 
+// Creates an expand or collapse all button
+let allButtonPt1 = function() {
+    // Getting the settings div ready to go, because it's about to get used a lot
+    let outputDiv = document.getElementById("outputDiv");
+
+    // Expand or collapse all button
+    let allButton = document.createElement('button');
+    allButton.id = 'allButton';
+    allButton.innerText = "Expand all";
+    allButton.style.marginLeft = "5px";
+    outputDiv.appendChild(allButton);
+}
+// This is a MESS but it works
+let allButtonPt2 = function() {
+    document.getElementById('allButton').addEventListener('click', (e) => {
+        let allButtons = document.querySelectorAll('.collapsible');
+        let clickActive = false;
+
+        if (e.target.innerText === "Expand all") {
+            e.target.innerText = "Collapse all";
+            clickActive = true;
+        }
+        else {
+            e.target.innerText = "Expand all";
+        }
+
+        for (let i = 0; i < allButtons.length; i++) {
+            if ((allButtons[i].nextElementSibling.style.display === "none") === clickActive) {
+                allButtons[i].click();
+            }
+        }
+    })
+}
+
+// Allows dot highltighting
+let beatDotHighliter = function() {
+    // Allowing highlighting
+    document.querySelectorAll('.beatDot').forEach((dot) => {
+        console.log(dot.style.backgroundColor);
+        dot.addEventListener('click', (e) => {
+            for (let i = 0; i < beatsObj.beats.length; i++) {
+                if (beatsObj.beats[i].names.includes(e.target.id)) {
+                    let color;
+                    let display;
+                    if (dot.style.backgroundColor === "black") {
+                        color = "blue";
+                        display = "block";
+                    }
+                    else {
+                        color = "black";
+                        display = "none";
+                    }
+    
+                    beatsObj.beats[i].names.forEach((element) => {
+                        document.getElementById(element).style.backgroundColor = color;
+                    })
+
+                    document.getElementById(`${beatsObj.beats[i].names[0]}Button`).nextSibling.style.display = display;
+                }
+            }
+        })
+    })
+}
+
+// Allows collapsible buttons
+let outputButtons = function() {
+    let allOutputButtons = document.querySelectorAll('.collapsible');
+    // Adding the event listener to all of them
+    for (let i = 0; i < allOutputButtons.length; i++) {
+        allOutputButtons[i].addEventListener("click", function() {
+            document.getElementById(`beat${i+1}`).click();
+        })
+    }
+}
+
 // Records a press
 let press = function(cl, startTime, i, e) {
     // If a shift or enter is pressed...
@@ -195,6 +270,7 @@ let press = function(cl, startTime, i, e) {
         let newBeatDot = document.createElement('span');
         newBeatDot.classList.add('beatDot');
         newBeatDot.id = `beat${i}`;
+        newBeatDot.style.backgroundColor = "black";
         newBeatDot.style.left = `${(relativeT/cl) * 100}%`;
         DOMCycle.appendChild(newBeatDot);
         
@@ -370,6 +446,10 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
     // Getting the settings div ready to go, because it's about to get used a lot
     let outputDiv = document.getElementById("outputDiv");
 
+    // Adding an expand/collapse all button
+    allButtonPt1();
+    allButtonPt2();
+
     // Looping through things to calculate BPM and offset. Also doing DOM manipulation directly afterwards.
     // NOTE TO SELF: literally never go into front end development, you are very bad at it. (W3Schools CSS tutorial site web request count for the below code: 9999999999999999999)
     for (let i = 0; i < beatsObj.beats.length; i++) {
@@ -398,30 +478,15 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         newWrapper.appendChild(newButton);
         newWrapper.appendChild(newTextDiv);
         outputDiv.appendChild(newWrapper);
-
-        // Creating an event listener for the button
-        document.getElementById(`beat${i+1}Button`).addEventListener("click", function() {
-            // Getting the respective text div
-            let textDiv = document.getElementById(`beat${i+1}Div`);
-            // Toggling the button active
-            this.classList.toggle("active");
-
-            // If the text is displayed...
-            if (textDiv.style.display === "block") {
-                // Hide it
-                textDiv.style.display = "none";
-            }
-            // Otherwise...
-            else {
-                // Display it
-                textDiv.style.display = "block";
-            }
-        })
     }
+
+    outputButtons();
 
     // Saving HTML so importing is easy
     beatsObj.linesHTML = document.getElementById('beatLineWrappersWrapper').innerHTML;
     beatsObj.outputHTML = document.getElementById('outputDiv').innerHTML;
+
+    beatDotHighliter();
 }
 
 let beatsObj = {};
@@ -462,7 +527,7 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
     // Awaiting the imported file contents
     let contents = await e.target.files[0].text();
     // Parsing as JSON to an object
-    let beatsObj = JSON.parse(contents);
+    beatsObj = JSON.parse(contents);
     // Dev stuff, you wouldn't understand
     console.log(beatsObj);
     
@@ -470,6 +535,13 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
     document.getElementById('beatLineWrappersWrapper').innerHTML = beatsObj.linesHTML;
     // Output HTML
     document.getElementById('outputDiv').innerHTML = beatsObj.outputHTML;
+    allButtonPt2();
+
+    // Getting all the output collapsibles
+    outputButtons();
+
+    // Doing the beat dots
+    beatDotHighliter();
     
     // Entering the proper settings
     document.getElementById('bpm').value = beatsObj.bpm;
@@ -477,27 +549,4 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
     document.getElementById('bpc').value = beatsObj.bpc;
     document.getElementById('tol').value = beatsObj.tol;
     document.getElementById('sl').checked = beatsObj.sl;
-
-    // Getting all the output collapsibles
-    let allOutputButtons = document.querySelectorAll('.collapsible');
-    // Adding the event listener to all of them
-    for (let i = 0; i < allOutputButtons.length; i++) {
-        allOutputButtons[i].addEventListener("click", function() {
-            // Getting the respective text div
-            let textDiv = document.getElementById(`beat${i+1}Div`);
-            // Toggling the button active
-            this.classList.toggle("active");
-
-            // If the text is displayed...
-            if (textDiv.style.display === "block") {
-                // Hide it
-                textDiv.style.display = "none";
-            }
-            // Otherwise...
-            else {
-                // Display it
-                textDiv.style.display = "block";
-            }
-        })
-    }
 })
