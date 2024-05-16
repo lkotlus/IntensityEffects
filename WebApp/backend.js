@@ -52,7 +52,7 @@ class Beat {
     setOffset(baseLen, nc) {
         let fullLen = baseLen * (nc/this.occ.length);
         let ratio = this.fullTime[0]/fullLen;
-        this.offset = (360 * ratio).toFixed(2);
+        this.offset = (360 - (360 * ratio)).toFixed(2);
     }
 
     // Prints a description of the beat (for debugging)
@@ -493,6 +493,9 @@ let beatsObj = {};
 
 // Start button event listener
 document.getElementById('startBtn').addEventListener('click', (e) => {
+    // Clearing the HTML
+    document.getElementById("outputDiv").innerHTML = "<h2>Output</h2>";
+    document.getElementById("beatLineWrappersWrapper").innerHTML = "";
     // Creates a beats array
     beats = [];
     // Adds some text
