@@ -1,3 +1,5 @@
+'use strict'
+
 // A class to specify each beat
 class Beat {
     // Constructor function, takes in a time t and a cycle number c
@@ -191,7 +193,7 @@ let allButtonPt1 = function() {
     allButton.style.marginLeft = "5px";
     outputDiv.appendChild(allButton);
 }
-// This is a MESS but it works
+// This is a MESS, but it works :)
 let allButtonPt2 = function() {
     document.getElementById('allButton').addEventListener('click', (e) => {
         let allButtons = document.querySelectorAll('.collapsible');
@@ -255,7 +257,7 @@ let outputButtons = function() {
 }
 
 // Records a press
-let press = function(cl, startTime, i, e) {
+let press = function(beats, cl, startTime, i, e) {
     // If a shift or enter is pressed...
     if (e.keyCode === 16 || e.keyCode === 13) {
         // Get the time it was pressed at and calculate the current cycle
@@ -281,6 +283,9 @@ let press = function(cl, startTime, i, e) {
 
 let record = function(e) {
     if (e.keyCode === 13) {
+        // Creating an empty array for our beats
+        let beats = [];
+
         // Removing the event listeners
         document.removeEventListener('keydown', record);
 
@@ -310,7 +315,7 @@ let record = function(e) {
             document.getElementById('beatLineWrappersWrapper').appendChild(newBeatLine);
         }
 
-        // Beat interval is 60 divided by beats per minute
+        // Beat interval (length of a beat in millisenconds) is 60 seconds divided by beats per minute
         let bi = (60/bpm)*1000;
         // The length of a cycle (in milliseconds) beat length times beats per cycle
         let cl = bi*bpc;
@@ -324,18 +329,17 @@ let record = function(e) {
 
         // Doing timey wimey stuff
         let startTime = Date.now();
-        let endTime = startTime + cl;
         let i = 1;
 
         // Doing a key press so the "enter" input becomes a beat (only if start late is false)
         if (!sl) {
-            press(cl, startTime, i, {keyCode: 13});
+            press(beats, cl, startTime, i, {keyCode: 13});
             i++
         }
 
         // Handler function for an event listener (see comment below)
         let handler = (e) => {
-            press(cl, startTime, i, e);
+            press(beats, cl, startTime, i, e);
             i++;
         }
 
@@ -370,7 +374,7 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
     // Making times relative to respective cycles rather than to the start of the first cycle
     adjustTimes(beats, cl);
 
-    beatsCopy = [];
+    let beatsCopy = [];
     for (let i = 0; i < beats.length; i++) {
         beatsCopy.push([...beats[i]]);
     }    
@@ -400,10 +404,10 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         for (let beat = 0; beat < beats[currentCycle].length; beat++) {
             // Looping through all other cycles
             for (let otherCycle = 0; otherCycle < beats.length; otherCycle++) {
-                // If the other cycle isn't the current cycle and binSearch didn't return false...
+                // If the other cycle isn't the current cycle...
                 if (otherCycle != currentCycle) {
                     // Binary searching the other cycles for matching beats
-                    binResults = binSearch(beats[currentCycle][beat], beats[otherCycle], tol);
+                    let binResults = binSearch(beats[currentCycle][beat], beats[otherCycle], tol);
 
                     // Pro tip! Do not just put the following:
                     //      if (binResults) { ... }
@@ -412,7 +416,7 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
                     if (binResults !== false) {
                         // Join the two beats
                         beats[currentCycle][beat].join(beats[otherCycle][binResults], beatsObj.cl);
-                        // And remove the other beat from it's current array
+                        // And remove the other beat from it's current array3
                         beats[otherCycle].splice(binResults, 1);
                     }
                 }
@@ -451,33 +455,33 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
     allButtonPt2();
 
     // Looping through things to calculate BPM and offset. Also doing DOM manipulation directly afterwards.
-    // NOTE TO SELF: literally never go into front end development, you are very bad at it. (W3Schools CSS tutorial site web request count for the below code: 9999999999999999999)
+    // NOTE TO SELF: literally never go into front end development, you are very bad at it. (W3Schools CSS tutorial site GET request count for the below code: 9999999999999999999)
     for (let i = 0; i < beatsObj.beats.length; i++) {
         // Setting the BPM and offset for the current beat
         beatsObj.beats[i].setBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
         beatsObj.beats[i].setOffset(beatsObj.cl, beatsObj.c);
 
-        let newWrapper = document.createElement("div");
-        newWrapper.id = `beat${i+1}Wrapper`;
-        newWrapper.classList.add("beatWrapper");
+        // let newWrapper = document.createElement("div");
+        // newWrapper.id = `beat${i+1}Wrapper`;
+        // newWrapper.classList.add("beatWrapper");
 
-        // Creating a new button for the collapsible of the current beat
-        let newButton = document.createElement("button");
-        newButton.textContent = `Beat ${i+1}`;
-        newButton.classList.add("collapsible");
-        newButton.id = `beat${i+1}Button`;
+        // // Creating a new button for the collapsible of the current beat
+        // let newButton = document.createElement("button");
+        // newButton.textContent = `Beat ${i+1}`;
+        // newButton.classList.add("collapsible");
+        // newButton.id = `beat${i+1}Button`;
 
-        // Creating a new text div for the collapsible of the current beat
-        let newTextDiv = document.createElement("div");
-        newTextDiv.textContent = `BPM: ${beatsObj.beats[i].bpm}, Offset: ${beatsObj.beats[i].offset}`;
-        newTextDiv.style.display = "none";
-        newTextDiv.id = `beat${i+1}Div`;
-        newTextDiv.classList.add("textOutputDiv");
+        // // Creating a new text div for the collapsible of the current beat
+        // let newTextDiv = document.createElement("div");
+        // newTextDiv.textContent = `BPM: ${beatsObj.beats[i].bpm}, Offset: ${beatsObj.beats[i].offset}`;
+        // newTextDiv.style.display = "none";
+        // newTextDiv.id = `beat${i+1}Div`;
+        // newTextDiv.classList.add("textOutputDiv");
 
-        // Appending all of the above elements to the settings div
-        newWrapper.appendChild(newButton);
-        newWrapper.appendChild(newTextDiv);
-        outputDiv.appendChild(newWrapper);
+        // // Appending all of the above elements to the settings div
+        // newWrapper.appendChild(newButton);
+        // newWrapper.appendChild(newTextDiv);
+        // outputDiv.appendChild(newWrapper);
     }
 
     outputButtons();
@@ -486,7 +490,7 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
     beatsObj.linesHTML = document.getElementById('beatLineWrappersWrapper').innerHTML;
     beatsObj.outputHTML = document.getElementById('outputDiv').innerHTML;
 
-    beatDotHighliter();
+    // beatDotHighliter();
 }
 
 let beatsObj = {};
@@ -496,8 +500,6 @@ document.getElementById('startBtn').addEventListener('click', (e) => {
     // Clearing the HTML
     document.getElementById("outputDiv").innerHTML = "<h2>Output</h2>";
     document.getElementById("beatLineWrappersWrapper").innerHTML = "";
-    // Creates a beats array
-    beats = [];
     // Adds some text
     document.getElementById('textBox').textContent = "Press enter to start recording...";
     // Adds a listener for keystrokes
