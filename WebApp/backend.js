@@ -59,7 +59,7 @@ class Beat {
 
     // Prints a description of the beat (for debugging)
     print() {
-        console.log(`Time interval ${this.t} during cycle(s) ${this.occ.sort((a, b) => a - b)}. BPM: ${this.bpm}, offset: ${this.offset}`);
+        return `Relative time ${this.t} during cycle(s) ${this.occ.sort((a, b) => a - b)}. BPM: ${this.bpm}, offset: ${this.offset}`;
     }
 }
 
@@ -460,6 +460,7 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         // Setting the BPM and offset for the current beat
         beatsObj.beats[i].setBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
         beatsObj.beats[i].setOffset(beatsObj.cl, beatsObj.c);
+        console.log(`BEAT${i+1}: ${beatsObj.beats[i].print()}`)
 
         // let newWrapper = document.createElement("div");
         // newWrapper.id = `beat${i+1}Wrapper`;
