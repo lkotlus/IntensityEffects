@@ -193,72 +193,32 @@ let allButtonPt1 = function() {
     allButton.style.marginLeft = "5px";
     outputDiv.appendChild(allButton);
 }
-// This is a MESS, but it works :)
+// Expand all functionality
 let allButtonPt2 = function() {
-    // document.getElementById('allButton').addEventListener('click', (e) => {
-    //     let allButtons = document.querySelectorAll('.collapsible');
-    //     let clickActive = false;
+    document.getElementById('allButton').addEventListener('click', (e) => {
+        let displayCase;
 
-    //     if (e.target.innerText === "Expand all") {
-    //         e.target.innerText = "Collapse all";
-    //         clickActive = true;
-    //     }
-    //     else {
-    //         e.target.innerText = "Expand all";
-    //     }
+        if (e.target.textContent === "Expand all") {
+            displayCase = "none";
+            e.target.textContent = "Collapse all";
+        }
+        else {
+            displayCase = "block"
+            e.target.textContent = "Expand all";
+        }
 
-    //     for (let i = 0; i < allButtons.length; i++) {
-    //         if ((allButtons[i].nextElementSibling.style.display === "none") === clickActive) {
-    //             allButtons[i].click();
-    //         }
-    //     }
-    // })
-}
+        let allButtons = document.getElementsByClassName("collapsible");
 
-// Allows dot highltighting
-let beatDotHighliter = function() {
-    // Allowing highlighting
-    document.querySelectorAll('.beatDot').forEach((dot) => {
-        console.log(dot.style.backgroundColor);
-        dot.addEventListener('click', (e) => {
-            for (let i = 0; i < beatsObj.beats.length; i++) {
-                if (beatsObj.beats[i].names.includes(e.target.id)) {
-                    let color;
-                    let display;
-                    if (dot.style.backgroundColor === "black") {
-                        color = "blue";
-                        display = "block";
-                    }
-                    else {
-                        color = "black";
-                        display = "none";
-                    }
-    
-                    beatsObj.beats[i].names.forEach((element) => {
-                        document.getElementById(element).style.backgroundColor = color;
-                    })
-
-                    document.getElementById(`${beatsObj.beats[i].names[0]}Button`).nextSibling.style.display = display;
-                }
+        for (let i = 0; i < allButtons.length; i++) {
+            if (allButtons[i].nextSibling.style.display === displayCase) {
+                allButtons[i].click();
             }
-        })
+        }
     })
 }
 
-// Allows collapsible buttons
-let outputButtons = function() {
-    let allOutputButtons = document.querySelectorAll('.collapsible');
-    // Adding the event listener to all of them
-    for (let i = 0; i < allOutputButtons.length; i++) {
-        allOutputButtons[i].addEventListener("click", function() {
-            document.getElementById(`beat${i+1}`).click();
-        })
-    }
-}
-
-
 // Interact with beat dot
-let dotInteract = function(e) {
+let dotInteract = function(e, secondHand) {
     if (e.target.style.backgroundColor === "black") {
         e.target.style.backgroundColor = "blue";
     }
@@ -266,25 +226,27 @@ let dotInteract = function(e) {
         e.target.style.backgroundColor = "black";
     }
 
-    let className;
+    if (!secondHand) {
+        let className;
 
-    for (let i = 0; i < e.target.classList.length; i++) {
-        if (e.target.classList[i].includes("beat")) {
-            className = e.target.classList[i];
+        for (let i = 0; i < e.target.classList.length; i++) {
+            if (e.target.classList[i].includes("beat")) {
+                className = e.target.classList[i];
+            }
         }
-    }
-
-    let elements = document.getElementsByClassName(className);
-
-    for (let i = 0; i < elements.length; i++) {
-        if (elements[i].id !== e.target.id) {
-            elements[i].click();
+    
+        let elements = document.getElementsByClassName(className);
+    
+        for (let i = 0; i < elements.length; i++) {
+            if (elements[i].id !== e.target.id) {
+                buttonInteract({target: elements[i]}, true)
+            }
         }
     }
 }
 
 // Interact with button
-let buttonInteract = function(e) {
+let buttonInteract = function(e, secondHand) {
     if (e.target.nextSibling.style.display === "block") {
         e.target.nextSibling.style.display = "none";
     }
@@ -292,19 +254,22 @@ let buttonInteract = function(e) {
         e.target.nextSibling.style.display = "block";
     }
 
-    let className;
 
-    for (let i = 0; i < e.target.classList.length; i++) {
-        if (e.target.classList[i].includes("beat")) {
-            className = e.target.classList[i];
+    if (!secondHand) {
+        let className;
+
+        for (let i = 0; i < e.target.classList.length; i++) {
+            if (e.target.classList[i].includes("beat")) {
+                className = e.target.classList[i];
+            }
         }
-    }
-
-    let elements = document.getElementsByClassName(className);
-
-    for (let i = 0; i < elements.length; i++) {
-        if (elements[i].id !== e.target.id) {
-            elements[i].click();
+    
+        let elements = document.getElementsByClassName(className);
+    
+        for (let i = 0; i < elements.length; i++) {
+            if (!elements[i].classList.contains('collapsible')) {
+                dotInteract({target: elements[i]}, true);
+            }
         }
     }
 }
@@ -316,12 +281,12 @@ let beatInteraction = function(n) {
     for (let i = 0; i < items.length; i++) {
         if (items[i].classList.contains('beatDot')) {
             items[i].addEventListener('click', (e) => {
-                dotInteract(e);
+                dotInteract(e, false);
             })
         }
         else {
             items[i].addEventListener('click', (e) => {
-                buttonInteract(e);
+                buttonInteract(e, false);
             })
         }
     }
