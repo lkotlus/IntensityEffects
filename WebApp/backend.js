@@ -195,24 +195,24 @@ let allButtonPt1 = function() {
 }
 // This is a MESS, but it works :)
 let allButtonPt2 = function() {
-    document.getElementById('allButton').addEventListener('click', (e) => {
-        let allButtons = document.querySelectorAll('.collapsible');
-        let clickActive = false;
+    // document.getElementById('allButton').addEventListener('click', (e) => {
+    //     let allButtons = document.querySelectorAll('.collapsible');
+    //     let clickActive = false;
 
-        if (e.target.innerText === "Expand all") {
-            e.target.innerText = "Collapse all";
-            clickActive = true;
-        }
-        else {
-            e.target.innerText = "Expand all";
-        }
+    //     if (e.target.innerText === "Expand all") {
+    //         e.target.innerText = "Collapse all";
+    //         clickActive = true;
+    //     }
+    //     else {
+    //         e.target.innerText = "Expand all";
+    //     }
 
-        for (let i = 0; i < allButtons.length; i++) {
-            if ((allButtons[i].nextElementSibling.style.display === "none") === clickActive) {
-                allButtons[i].click();
-            }
-        }
-    })
+    //     for (let i = 0; i < allButtons.length; i++) {
+    //         if ((allButtons[i].nextElementSibling.style.display === "none") === clickActive) {
+    //             allButtons[i].click();
+    //         }
+    //     }
+    // })
 }
 
 // Allows dot highltighting
@@ -253,6 +253,77 @@ let outputButtons = function() {
         allOutputButtons[i].addEventListener("click", function() {
             document.getElementById(`beat${i+1}`).click();
         })
+    }
+}
+
+
+// Interact with beat dot
+let dotInteract = function(e) {
+    if (e.target.style.backgroundColor === "black") {
+        e.target.style.backgroundColor = "blue";
+    }
+    else {
+        e.target.style.backgroundColor = "black";
+    }
+
+    let className;
+
+    for (let i = 0; i < e.target.classList.length; i++) {
+        if (e.target.classList[i].includes("beat")) {
+            className = e.target.classList[i];
+        }
+    }
+
+    let elements = document.getElementsByClassName(className);
+
+    for (let i = 0; i < elements.length; i++) {
+        if (elements[i].id !== e.target.id) {
+            elements[i].click();
+        }
+    }
+}
+
+// Interact with button
+let buttonInteract = function(e) {
+    if (e.target.nextSibling.style.display === "block") {
+        e.target.nextSibling.style.display = "none";
+    }
+    else {
+        e.target.nextSibling.style.display = "block";
+    }
+
+    let className;
+
+    for (let i = 0; i < e.target.classList.length; i++) {
+        if (e.target.classList[i].includes("beat")) {
+            className = e.target.classList[i];
+        }
+    }
+
+    let elements = document.getElementsByClassName(className);
+
+    for (let i = 0; i < elements.length; i++) {
+        if (elements[i].id !== e.target.id) {
+            elements[i].click();
+        }
+    }
+}
+
+// Code for interacting with beats
+let beatInteraction = function(n) {
+    let items = document.getElementsByClassName(`beat${n}`);
+
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].classList.contains('beatDot')) {
+            items[i].addEventListener('click', (e) => {
+                dotInteract(e);
+            })
+        }
+        else {
+            items[i].addEventListener('click', (e) => {
+                buttonInteract(e);
+            })
+        }
     }
 }
 
@@ -462,30 +533,39 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         beatsObj.beats[i].setOffset(beatsObj.cl, beatsObj.c);
         console.log(`BEAT${i+1}: ${beatsObj.beats[i].print()}`)
 
-        // let newWrapper = document.createElement("div");
-        // newWrapper.id = `beat${i+1}Wrapper`;
-        // newWrapper.classList.add("beatWrapper");
+        let newWrapper = document.createElement("div");
+        newWrapper.id = `beat${i+1}Wrapper`;
+        newWrapper.classList.add("beatWrapper");
 
-        // // Creating a new button for the collapsible of the current beat
-        // let newButton = document.createElement("button");
-        // newButton.textContent = `Beat ${i+1}`;
-        // newButton.classList.add("collapsible");
-        // newButton.id = `beat${i+1}Button`;
+        // Creating a new button for the collapsible of the current beat
+        let newButton = document.createElement("button");
+        newButton.textContent = `Beat ${i+1}`;
+        newButton.classList.add("collapsible");
+        newButton.classList.add(`beat${i+1}`)
+        newButton.id = `beat${i+1}Button`;
 
-        // // Creating a new text div for the collapsible of the current beat
-        // let newTextDiv = document.createElement("div");
-        // newTextDiv.textContent = `BPM: ${beatsObj.beats[i].bpm}, Offset: ${beatsObj.beats[i].offset}`;
-        // newTextDiv.style.display = "none";
-        // newTextDiv.id = `beat${i+1}Div`;
-        // newTextDiv.classList.add("textOutputDiv");
+        // Creating a new text div for the collapsible of the current beat
+        let newTextDiv = document.createElement("div");
+        newTextDiv.textContent = `BPM: ${beatsObj.beats[i].bpm}, Offset: ${beatsObj.beats[i].offset}`;
+        newTextDiv.style.display = "none";
+        newTextDiv.id = `beat${i+1}Div`;
+        newTextDiv.classList.add("textOutputDiv");
 
-        // // Appending all of the above elements to the settings div
-        // newWrapper.appendChild(newButton);
-        // newWrapper.appendChild(newTextDiv);
-        // outputDiv.appendChild(newWrapper);
+        // Appending all of the above elements to the settings div
+        newWrapper.appendChild(newButton);
+        newWrapper.appendChild(newTextDiv);
+        outputDiv.appendChild(newWrapper);
+
+        // Setting the correct classname for all beat dots
+        for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
+            document.getElementById(beatsObj.beats[i].names[j]).classList.add(`beat${i+1}`);
+        }
+
+        // Adding interaction capabilities
+        beatInteraction(i+1)
     }
 
-    outputButtons();
+    // outputButtons();
 
     // Saving HTML so importing is easy
     beatsObj.linesHTML = document.getElementById('beatLineWrappersWrapper').innerHTML;
