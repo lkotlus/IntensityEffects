@@ -643,6 +643,11 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
     document.getElementById('outputDiv').innerHTML = beatsObj.outputHTML;
     allButtonPt2();
 
+    // Setting up beat interaction stuff
+    for (let i = 0; i < beatsObj.beats.length; i++) {
+        beatInteraction(i+1);
+    }
+
     // Getting all the output collapsibles
     outputButtons();
 
