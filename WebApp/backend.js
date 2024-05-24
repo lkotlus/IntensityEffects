@@ -565,12 +565,18 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
 
         // Creating a new text div for the collapsible of the current beat
         let newTextDiv = document.createElement("div");
-        newTextDiv.textContent = `BPM: ${beatsObj.beats[i].bpm}, Offset: ${beatsObj.beats[i].offset}`;
+        newTextDiv.textContent = `BPM: ${beatsObj.beats[i].bpm}, Offset: `;
         newTextDiv.style.display = "none";
         newTextDiv.id = `beat${i+1}Div`;
         newTextDiv.classList.add("textOutputDiv");
 
+        let newOffsetInput = document.createElement("input");
+        newOffsetInput.value = beatsObj.beats[i].offset;
+        newOffsetInput.classList.add("offsetInput");
+        newOffsetInput.readOnly = true;
+
         // Appending all of the above elements to the settings div
+        newTextDiv.appendChild(newOffsetInput);
         newWrapper.appendChild(newButton);
         newWrapper.appendChild(newTextDiv);
         outputDiv.appendChild(newWrapper);
@@ -583,8 +589,6 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         // Adding interaction capabilities
         beatInteraction(i+1)
     }
-
-    // outputButtons();
 
     // Saving HTML so importing is easy
     beatsObj.linesHTML = document.getElementById('beatLineWrappersWrapper').innerHTML;
