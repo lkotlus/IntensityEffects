@@ -289,6 +289,31 @@ let buttonInteract = function(e, secondHand) {
     return selected;
 }
 
+// Code for enabling/disabling certain edit buttons
+let adjustEditUI = function(l) {
+    // Two or more beats selected
+    if (l >= 2) {
+        document.getElementById('join').disabled = false;
+        document.getElementById('split').disabled = true;
+        document.getElementById('sync').disabled = false;
+        document.getElementById('move').disabled = true;
+    }
+    // One beat selected
+    else if (l === 1) {
+        document.getElementById('join').disabled = true;
+        document.getElementById('split').disabled = false;
+        document.getElementById('sync').disabled = true;
+        document.getElementById('move').disabled = false;
+    }
+    // No beats selected
+    else {
+        document.getElementById('join').disabled = true;
+        document.getElementById('split').disabled = true;
+        document.getElementById('sync').disabled = true;
+        document.getElementById('move').disabled = true;
+    }
+}
+
 // Code for interacting with beats
 let beatInteraction = function(n) {
     let items = document.getElementsByClassName(`beat${n}`);
@@ -303,7 +328,7 @@ let beatInteraction = function(n) {
                     selected.splice(selected.indexOf(n), 1);
                 }
 
-                // console.log(selected);
+                adjustEditUI(selected.length);
             })
         }
         else {
@@ -315,7 +340,7 @@ let beatInteraction = function(n) {
                     selected.splice(selected.indexOf(n), 1);
                 }
 
-                // console.log(selected);
+                adjustEditUI(selected.length);
             })
         }
     }
