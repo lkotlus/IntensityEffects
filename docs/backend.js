@@ -472,7 +472,7 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         // Check if it's valid...
         if (!isValid(beatsObj.beats[i], beatsObj.c)) {
             // If not, split the beat
-            insertableBeats = beatsObj.beats[i].split();
+            let insertableBeats = beatsObj.beats[i].split();
             // Splice it up
             beatsObj.beats.splice(i, 1);
 
