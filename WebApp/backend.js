@@ -219,36 +219,49 @@ let allButtonPt2 = function() {
 
 // Interact with beat dot
 let dotInteract = function(e, secondHand) {
+    let selected = true;
+
     if (e.target.style.backgroundColor === "black") {
         e.target.style.backgroundColor = "blue";
     }
     else {
         e.target.style.backgroundColor = "black";
+        selected = false;
     }
 
     if (!secondHand) {
         let className;
 
         for (let i = 0; i < e.target.classList.length; i++) {
-            if (e.target.classList[i].includes("beat")) {
+            if (e.target.classList[i].includes("beat") && e.target.classList[i] !== "beatDot") {
                 className = e.target.classList[i];
             }
         }
-    
+        
         let elements = document.getElementsByClassName(className);
     
         for (let i = 0; i < elements.length; i++) {
             if (elements[i].id !== e.target.id) {
-                buttonInteract({target: elements[i]}, true)
+                if (elements[i].tagName === "BUTTON") {
+                    buttonInteract({target: elements[i]}, true);
+                }
+                else {
+                    dotInteract({target: elements[i]}, true);
+                }
             }
         }
     }
+
+    return selected;
 }
 
 // Interact with button
 let buttonInteract = function(e, secondHand) {
+    let selected = true;
+
     if (e.target.nextSibling.style.display === "block") {
         e.target.nextSibling.style.display = "none";
+        selected = false;
     }
     else {
         e.target.nextSibling.style.display = "block";
@@ -272,6 +285,8 @@ let buttonInteract = function(e, secondHand) {
             }
         }
     }
+
+    return selected;
 }
 
 // Code for interacting with beats
@@ -281,12 +296,26 @@ let beatInteraction = function(n) {
     for (let i = 0; i < items.length; i++) {
         if (items[i].classList.contains('beatDot')) {
             items[i].addEventListener('click', (e) => {
-                dotInteract(e, false);
+                if (dotInteract(e, false)) {
+                    selected.push(n);
+                }
+                else {
+                    selected.splice(selected.indexOf(n), 1);
+                }
+
+                // console.log(selected);
             })
         }
         else {
             items[i].addEventListener('click', (e) => {
-                buttonInteract(e, false);
+                if (buttonInteract(e, false)) {
+                    selected.push(n);
+                }
+                else {
+                    selected.splice(selected.indexOf(n), 1);
+                }
+
+                // console.log(selected);
             })
         }
     }
@@ -540,6 +569,7 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
 }
 
 let beatsObj = {};
+let selected = [];
 
 // Start button event listener
 document.getElementById('startBtn').addEventListener('click', (e) => {
