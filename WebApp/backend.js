@@ -59,20 +59,28 @@ class Beat {
 
     // Sets custom offset from user input
     setOffset(offset, baseLen, nc) {
-        baseLen = (baseLen * nc) / this.names.length;
+        let len  = baseLen * (nc / this.occ.length);
+        this.t = len * (1 - (offset / 360));
         
-        let ratio = 1 - (offset / 360);
-        this.offset = offset;
-        this.t = baseLen * ratio;
-        
-        for (let i = 0; i < this.fullTime.length; i++) {
-            let n = Math.floor(this.fullTime[i] / baseLen);
-            this.fullTime[i] = (baseLen * n) + this.t;
+        for (let i = 0; i < this.occ.length; i++) {
+            this.fullTime[i] = (baseLen * this.occ[i]) + this.t;
         }
 
+        let currentCycle = this.occ[0];
+        let correctedCycle = Math.floor(this.t / baseLen);
+        let cycleShift = correctedCycle - currentCycle;
+        this.t -= baseLen * cycleShift;
+
         for (let i = 0; i < this.names.length; i++) {
-            console.log(`${(this.t / baseLen) * 100}%`);
-            document.getElementById(this.names[i]).style.left = `${(this.t / baseLen) * 100}%`;
+            this.occ[i] += cycleShift;
+            
+            let dot = document.getElementById(this.names[i]);
+            document.getElementById(this.names[i]).remove();
+
+            console.log(`cycle${this.occ[i] + 1}`);
+            let newCycle = document.getElementById(`cycle${this.occ[i] + 1}`);
+            newCycle.appendChild(dot);
+            dot.style.left = `${(this.t / baseLen) * 100}%`;
         }
     }
 
@@ -368,6 +376,16 @@ let beatInteraction = function(n) {
     }
 }
 
+// Restricting values for offset
+let offsetChange = function(e) {
+    if (parseInt(e.target.value) > 360) {
+        e.target.value = '360';
+    }
+    else if (parseInt(e.target.value) <= 0) {
+        e.target.value = '360';
+    }
+}
+
 // Records a press
 let press = function(beats, cl, startTime, i, e) {
     // If a shift or enter is pressed...
@@ -599,6 +617,9 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         newOffsetInput.classList.add("offsetInput");
         newOffsetInput.id = `beat${i+1}Offset`;
         newOffsetInput.readOnly = true;
+        newOffsetInput.addEventListener('change', (e) => {
+            offsetChange(e);
+        })
 
         // Appending all of the above elements to the settings div
         newTextDiv.appendChild(newOffsetInput);
@@ -696,12 +717,19 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 // 
 
 document.getElementById('editOffset').addEventListener('click', (e) => {
-    console.log("AY")
     document.getElementById(`beat${selected[0]}Offset`).removeAttribute('readonly');
+
+    document.getElementById('split').disabled = true;
+    document.getElementById('editOffset').disabled = true;
+    document.getElementById('move').disabled = true;
 
     document.getElementById(`beat${selected[0]}Offset`).addEventListener('change', (e) => {
         beatsObj.beats[selected[0]-1].setOffset(e.target.value, beatsObj.cl, beatsObj.c);
 
         e.target.setAttribute('readonly', 'readonly');
-    })
+    }, {once: true})
+
+    document.getElementById('split').disabled = false;
+    document.getElementById('editOffset').disabled = false;
+    document.getElementById('move').disabled = false;
 })
