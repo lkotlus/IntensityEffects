@@ -318,6 +318,8 @@ let buttonInteract = function(e, secondHand) {
 
 // Code for enabling/disabling certain edit buttons
 let adjustEditUI = function(l) {
+    console.log(l)
+    
     // Two or more beats selected
     if (l >= 2) {
         document.getElementById('join').disabled = false;
@@ -717,11 +719,15 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 // 
 
 document.getElementById('editOffset').addEventListener('click', (e) => {
+    adjustEditUI(0);
+
     document.getElementById(`beat${selected[0]}Offset`).removeAttribute('readonly');
 
     document.getElementById(`beat${selected[0]}Offset`).addEventListener('change', (e) => {
         beatsObj.beats[selected[0]-1].setOffset(e.target.value, beatsObj.cl, beatsObj.c);
 
         e.target.setAttribute('readonly', 'readonly');
+
+        adjustEditUI(selected.length);
     }, {once: true})
 })
