@@ -343,7 +343,6 @@ let adjustEditUI = function(l) {
     if (l >= 2) {
         document.getElementById('join').disabled = false;
         document.getElementById('split').disabled = true;
-        document.getElementById('sync').disabled = false;
         document.getElementById('move').disabled = true;
         document.getElementById('editOffset').disabled = true;
     }
@@ -351,7 +350,6 @@ let adjustEditUI = function(l) {
     else if (l === 1) {
         document.getElementById('join').disabled = true;
         document.getElementById('split').disabled = false;
-        document.getElementById('sync').disabled = true;
         document.getElementById('move').disabled = false;
         document.getElementById('editOffset').disabled = false;
     }
@@ -359,7 +357,6 @@ let adjustEditUI = function(l) {
     else {
         document.getElementById('join').disabled = true;
         document.getElementById('split').disabled = true;
-        document.getElementById('sync').disabled = true;
         document.getElementById('move').disabled = true;
         document.getElementById('editOffset').disabled = true;
     }
@@ -804,9 +801,4 @@ document.getElementById('move').addEventListener('click', (e) => {
     // Add our listeners
     window.addEventListener('keydown', arrowFunction);
     window.addEventListener('keydown', enterFunction);
-})
-
-// Sync button
-document.getElementById('sync').addEventListener('click', (e) => {
-
 })
