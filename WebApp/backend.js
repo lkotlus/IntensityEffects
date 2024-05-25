@@ -58,8 +58,10 @@ class Beat {
     }
 
     // Sets custom offset from user input
-    setOffset(offset, baseLen) {
-        let ratio = 1 - (offset/360);
+    setOffset(offset, baseLen, nc) {
+        baseLen = (baseLen * nc) / this.names.length;
+        
+        let ratio = 1 - (offset / 360);
         this.offset = offset;
         this.t = baseLen * ratio;
         
@@ -69,7 +71,8 @@ class Beat {
         }
 
         for (let i = 0; i < this.names.length; i++) {
-            document.getElementById(this.names[i]).style.left = `${ratio * 100}%`;
+            console.log(`${(this.t / baseLen) * 100}%`);
+            document.getElementById(this.names[i]).style.left = `${(this.t / baseLen) * 100}%`;
         }
     }
 
@@ -471,6 +474,8 @@ let record = function(e) {
                 document.getElementById("outputDiv").innerHTML = "<h2>Output</h2>";
                 document.getElementById("beatLineWrappersWrapper").innerHTML = "";
                 beats = [];
+                selected = [];
+                adjustEditUI()
                 document.getElementById('textBox').textContent = "Press enter to start recording...";
                 document.addEventListener('keydown', record);
             }, {once: true});
@@ -592,6 +597,7 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         let newOffsetInput = document.createElement("input");
         newOffsetInput.value = beatsObj.beats[i].offset;
         newOffsetInput.classList.add("offsetInput");
+        newOffsetInput.id = `beat${i+1}Offset`;
         newOffsetInput.readOnly = true;
 
         // Appending all of the above elements to the settings div
@@ -683,4 +689,19 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
     document.getElementById('bpc').value = beatsObj.bpc;
     document.getElementById('tol').value = beatsObj.tol;
     document.getElementById('sl').checked = beatsObj.sl;
+})
+
+// 
+////        Edit buttons
+// 
+
+document.getElementById('editOffset').addEventListener('click', (e) => {
+    console.log("AY")
+    document.getElementById(`beat${selected[0]}Offset`).removeAttribute('readonly');
+
+    document.getElementById(`beat${selected[0]}Offset`).addEventListener('change', (e) => {
+        beatsObj.beats[selected[0]-1].setOffset(e.target.value, beatsObj.cl, beatsObj.c);
+
+        e.target.setAttribute('readonly', 'readonly');
+    })
 })
