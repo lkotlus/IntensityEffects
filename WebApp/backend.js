@@ -724,10 +724,37 @@ document.getElementById('editOffset').addEventListener('click', (e) => {
     document.getElementById(`beat${selected[0]}Offset`).removeAttribute('readonly');
 
     document.getElementById(`beat${selected[0]}Offset`).addEventListener('change', (e) => {
-        beatsObj.beats[selected[0]-1].setOffset(e.target.value, beatsObj.cl, beatsObj.c);
+        beatsObj.beats[selected[0]-1].setOffset(parseFloat(e.target.value), beatsObj.cl, beatsObj.c);
 
         e.target.setAttribute('readonly', 'readonly');
 
         adjustEditUI(selected.length);
     }, {once: true})
+})
+
+document.getElementById('move').addEventListener('click', (e) => {
+    adjustEditUI(0);
+
+    // It's an arrow function that is called when the ARROW KEYS trigger it lmaooooooooooooooooooo (Do you get it? It's a play on words. I don't think you're get...)
+    let arrowFunction = (e) => {
+        if (e.keyCode === 37) {
+            let offsetElement = document.getElementById(`beat${selected[0]}Offset`);
+            offsetElement.value = `${parseInt(offsetElement.value) - 1}`;
+            beatsObj.beats[selected[0]-1].setOffset(parseFloat(offsetElement.value), beatsObj.cl, beatsObj.c);
+        }
+        else if (e.keyCode === 39) {
+            let offsetElement = document.getElementById(`beat${selected[0]}Offset`);
+            offsetElement.value = `${parseInt(offsetElement.value) + 1}`;
+            beatsObj.beats[selected[0]-1].setOffset(parseFloat(offsetElement.value), beatsObj.cl, beatsObj.c);
+        }
+    }
+    let enterFunction = (e) => {
+        if (e.keyCode === 13) {
+            window.removeEventListener('keydown', arrowFunction);
+            window.removeEventListener('keydown', enterfunction);
+        }
+    }
+
+    window.addEventListener('keydown', arrowFunction);
+    window.addEventListener('keydown', enterFunction);
 })
