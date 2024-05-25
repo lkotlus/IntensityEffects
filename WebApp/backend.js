@@ -19,21 +19,24 @@ class Beat {
     }
 
     // Syncs the times of two beats (averages the two)
-    sync(b2) {
+    sync(b2, cl) {
         this.t = (this.t + b2.t)/2;
         b2.t = this.t;
+
+        for (let i = 0; i < this.names.length; i++) {
+            document.getElementById(this.names[i]).style.left = `${100*(this.t/cl)}%`;
+        }
+        for (let i = 0; i < b2.names.length; i++) {
+            document.getElementById(b2.names[i]).style.left = `${100 * (this.t/cl)}%`;
+        }
     }
 
     // Joins two beats (syncs the time and concatonates the cycles)
     join(b2, cl) {
-        this.sync(b2);
+        this.sync(b2, cl);
         this.occ = this.occ.concat(b2.occ);
         this.names = this.names.concat(b2.names);
         this.fullTime = this.fullTime.concat(b2.fullTime);
-
-        for (let i = 0; i < this.names.length; i++) {
-            document.getElementById(this.names[i]).style.left = `${100*(this.t/cl)}%`
-        }
     }
 
     // Splits beats into individual components
@@ -83,7 +86,6 @@ class Beat {
             let dot = document.getElementById(this.names[i]);
             document.getElementById(this.names[i]).remove();
 
-            console.log(`cycle${this.occ[i] + 1}`);
             let newCycle = document.getElementById(`cycle${this.occ[i] + 1}`);
             newCycle.appendChild(dot);
             dot.style.left = `${(this.t / baseLen) * 100}%`;
@@ -336,9 +338,7 @@ let buttonInteract = function(e, secondHand) {
 }
 
 // Code for enabling/disabling certain edit buttons
-let adjustEditUI = function(l) {
-    console.log(l)
-    
+let adjustEditUI = function(l) {    
     // Two or more beats selected
     if (l >= 2) {
         document.getElementById('join').disabled = false;
@@ -606,6 +606,10 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         }
     }
 
+    render();
+}
+
+let render = function() {
     // Getting the settings div ready to go, because it's about to get used a lot
     let outputDiv = document.getElementById("outputDiv");
 
@@ -666,8 +670,6 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
     // Saving HTML so importing is easy
     beatsObj.linesHTML = document.getElementById('beatLineWrappersWrapper').innerHTML;
     beatsObj.outputHTML = document.getElementById('outputDiv').innerHTML;
-
-    // beatDotHighliter();
 }
 
 let beatsObj = {};
@@ -775,12 +777,14 @@ document.getElementById('move').addEventListener('click', (e) => {
         if (e.keyCode === 39) {
             let offsetElement = document.getElementById(`beat${selected[0]}Offset`);
             offsetElement.value = `${parseInt(offsetElement.value) - 1}`;
+            offsetElement.dispatchEvent(new Event("change"));
             beatsObj.beats[selected[0]-1].setOffset(parseFloat(offsetElement.value), beatsObj.cl, beatsObj.c);
         }
         // Increment offset on left arrow
         else if (e.keyCode === 37) {
             let offsetElement = document.getElementById(`beat${selected[0]}Offset`);
             offsetElement.value = `${parseInt(offsetElement.value) + 1}`;
+            offsetElement.dispatchEvent(new Event("change"));
             beatsObj.beats[selected[0]-1].setOffset(parseFloat(offsetElement.value), beatsObj.cl, beatsObj.c);
         }
     }
@@ -800,4 +804,9 @@ document.getElementById('move').addEventListener('click', (e) => {
     // Add our listeners
     window.addEventListener('keydown', arrowFunction);
     window.addEventListener('keydown', enterFunction);
+})
+
+// Sync button
+document.getElementById('sync').addEventListener('click', (e) => {
+
 })
