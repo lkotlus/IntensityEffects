@@ -22,6 +22,14 @@ class Beat {
     sync(b2, cl) {
         this.t = (this.t + b2.t)/2;
         b2.t = this.t;
+    }
+
+    // Joins two beats (syncs the time and concatonates the cycles)
+    join(b2, cl) {
+        this.sync(b2, cl);
+        this.occ = this.occ.concat(b2.occ);
+        this.names = this.names.concat(b2.names);
+        this.fullTime = this.fullTime.concat(b2.fullTime);
 
         for (let i = 0; i < this.names.length; i++) {
             document.getElementById(this.names[i]).style.left = `${100*(this.t/cl)}%`;
@@ -31,8 +39,8 @@ class Beat {
         }
     }
 
-    // Joins two beats (syncs the time and concatonates the cycles)
-    join(b2, cl) {
+    // Join used for potential joining action frfr
+    silentJoin(b2, cl) {
         this.sync(b2, cl);
         this.occ = this.occ.concat(b2.occ);
         this.names = this.names.concat(b2.names);
@@ -338,9 +346,29 @@ let buttonInteract = function(e, secondHand) {
 }
 
 // Code for enabling/disabling certain edit buttons
-let adjustEditUI = function(l) {    
+let adjustEditUI = function(l) {
+    let testBeat;
+
+    if (l > 0) {
+        // Copy beat object
+        testBeat = new Beat(0, 0, 0);
+        testBeat.t = beatsObj.beats[selected[0]-1].t
+        testBeat.names = beatsObj.beats[selected[0]-1].names
+        testBeat.fullTime = beatsObj.beats[selected[0]-1].fullTime
+        testBeat.occ = beatsObj.beats[selected[0]-1].occ
+        testBeat.bpm = beatsObj.beats[selected[0]-1].bpm
+        testBeat.offset = beatsObj.beats[selected[0]-1].offset
+
+        // Join them
+        for (let i = 1; i < selected.length; i++) {
+            testBeat.silentJoin(beatsObj.beats[selected[i]-1]);
+        }
+
+        console.log(testBeat);
+    }
+    
     // Two or more beats selected
-    if (l >= 2) {
+    if (l >= 2 && isValid(testBeat, beatsObj.c)) {
         document.getElementById('join').disabled = false;
         document.getElementById('split').disabled = true;
         document.getElementById('move').disabled = true;
