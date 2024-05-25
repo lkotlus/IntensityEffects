@@ -45,16 +45,32 @@ class Beat {
         return returnVals;
     }
 
-    // Sets the BPM for the beat
-    setBPM(baseBPM, nc, bpc) {
+    // Sets the BPM for the beat based on other variables
+    calcBPM(baseBPM, nc, bpc) {
         this.bpm = ((baseBPM * this.occ.length)/(bpc * nc)).toFixed(2);
     }
 
-    // Sets the offset for the beat
-    setOffset(baseLen, nc) {
+    // Sets the offset for the beat based on other variables
+    calcOffset(baseLen, nc) {
         let fullLen = baseLen * (nc/this.occ.length);
         let ratio = this.fullTime[0]/fullLen;
         this.offset = (360 - (360 * ratio)).toFixed(2);
+    }
+
+    // Sets custom offset from user input
+    setOffset(offset, baseLen) {
+        let ratio = 1 - (offset/360);
+        this.offset = offset;
+        this.t = baseLen * ratio;
+        
+        for (let i = 0; i < this.fullTime.length; i++) {
+            let n = Math.floor(this.fullTime[i] / baseLen);
+            this.fullTime[i] = (baseLen * n) + this.t;
+        }
+
+        for (let i = 0; i < this.names.length; i++) {
+            document.getElementById(this.names[i]).style.left = `${ratio * 100}%`;
+        }
     }
 
     // Prints a description of the beat (for debugging)
@@ -297,6 +313,7 @@ let adjustEditUI = function(l) {
         document.getElementById('split').disabled = true;
         document.getElementById('sync').disabled = false;
         document.getElementById('move').disabled = true;
+        document.getElementById('editOffset').disabled = true;
     }
     // One beat selected
     else if (l === 1) {
@@ -304,6 +321,7 @@ let adjustEditUI = function(l) {
         document.getElementById('split').disabled = false;
         document.getElementById('sync').disabled = true;
         document.getElementById('move').disabled = false;
+        document.getElementById('editOffset').disabled = false;
     }
     // No beats selected
     else {
@@ -311,6 +329,7 @@ let adjustEditUI = function(l) {
         document.getElementById('split').disabled = true;
         document.getElementById('sync').disabled = true;
         document.getElementById('move').disabled = true;
+        document.getElementById('editOffset').disabled = true;
     }
 }
 
@@ -548,8 +567,8 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
     // NOTE TO SELF: literally never go into front end development, you are very bad at it. (W3Schools CSS tutorial site GET request count for the below code: 9999999999999999999)
     for (let i = 0; i < beatsObj.beats.length; i++) {
         // Setting the BPM and offset for the current beat
-        beatsObj.beats[i].setBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
-        beatsObj.beats[i].setOffset(beatsObj.cl, beatsObj.c);
+        beatsObj.beats[i].calcBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
+        beatsObj.beats[i].calcOffset(beatsObj.cl, beatsObj.c);
         console.log(`BEAT${i+1}: ${beatsObj.beats[i].print()}`)
 
         let newWrapper = document.createElement("div");
