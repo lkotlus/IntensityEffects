@@ -4,11 +4,17 @@
 class Beat {
     // Constructor function, takes in a time t and a cycle number c
     constructor(t, c, n) {
+        // Simplified time
         this.t = t;
+        // Array of names
         this.names = [n];
+        // Array of full times
         this.fullTime = [t];
+        // Array of cycle numbers (indexed at 0)
         this.occ = [c];
+        // BPM value
         this.bpm = NaN;
+        // Offset value
         this.offset = NaN;
     }
 
@@ -246,16 +252,21 @@ let allButtonPt2 = function() {
 
 // Interact with beat dot
 let dotInteract = function(e, secondHand) {
+    // Assume selected is true
     let selected = true;
 
+    // If the color is black...
     if (e.target.style.backgroundColor === "black") {
+        // Make it blue, and selected stays true
         e.target.style.backgroundColor = "blue";
     }
     else {
+        // Otherwise, switch to black and set selected to false
         e.target.style.backgroundColor = "black";
         selected = false;
     }
 
+    // If not called second hand [read the code in buttonInteract, it's the same]
     if (!secondHand) {
         let className;
 
@@ -284,28 +295,35 @@ let dotInteract = function(e, secondHand) {
 
 // Interact with button
 let buttonInteract = function(e, secondHand) {
+    // Assume selected is true, confirmed later
     let selected = true;
 
+    // If it's block display...
     if (e.target.nextSibling.style.display === "block") {
+        // Switch to "none" and selected is false
         e.target.nextSibling.style.display = "none";
         selected = false;
     }
     else {
+        // Otherwise switch to "block" and selected stays true
         e.target.nextSibling.style.display = "block";
     }
 
-
+    // If this wasn't called secondhand
     if (!secondHand) {
         let className;
 
+        // Get the class name
         for (let i = 0; i < e.target.classList.length; i++) {
             if (e.target.classList[i].includes("beat")) {
                 className = e.target.classList[i];
             }
         }
     
+        // Get all the elements
         let elements = document.getElementsByClassName(className);
     
+        // Interact with them
         for (let i = 0; i < elements.length; i++) {
             if (!elements[i].classList.contains('collapsible')) {
                 dotInteract({target: elements[i]}, true);
@@ -313,6 +331,7 @@ let buttonInteract = function(e, secondHand) {
         }
     }
 
+    // Return selected
     return selected;
 }
 
@@ -348,10 +367,14 @@ let adjustEditUI = function(l) {
 
 // Code for interacting with beats
 let beatInteraction = function(n) {
+    // Get all elements with the correct class name
     let items = document.getElementsByClassName(`beat${n}`);
 
+    // Loop through them
     for (let i = 0; i < items.length; i++) {
+        // If it's a dot...
         if (items[i].classList.contains('beatDot')) {
+            // Add a particular event listener
             items[i].addEventListener('click', (e) => {
                 if (dotInteract(e, false)) {
                     selected.push(n);
@@ -364,6 +387,7 @@ let beatInteraction = function(n) {
             })
         }
         else {
+            // Add a different one if it's a button
             items[i].addEventListener('click', (e) => {
                 if (buttonInteract(e, false)) {
                     selected.push(n);
@@ -413,6 +437,7 @@ let press = function(beats, cl, startTime, i, e) {
     }
 }
 
+// Recording function... duh
 let record = function(e) {
     if (e.keyCode === 13) {
         // Creating an empty array for our beats
@@ -718,43 +743,61 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 ////        Edit buttons
 // 
 
+// Edit button
 document.getElementById('editOffset').addEventListener('click', (e) => {
+    // Disable other edit buttons while doing this
     adjustEditUI(0);
 
+    // Remove the readonly attribute while changing the offset
     document.getElementById(`beat${selected[0]}Offset`).removeAttribute('readonly');
 
+    // Listen for a change in offset
     document.getElementById(`beat${selected[0]}Offset`).addEventListener('change', (e) => {
+        // Once detected, implement the change in the backend
         beatsObj.beats[selected[0]-1].setOffset(parseFloat(e.target.value), beatsObj.cl, beatsObj.c);
 
+        // Bring back the readonly
         e.target.setAttribute('readonly', 'readonly');
 
+        // Bring back the edit buttons
         adjustEditUI(selected.length);
     }, {once: true})
 })
 
+// Move button
 document.getElementById('move').addEventListener('click', (e) => {
+    // Temporarily remove the edit buttons
     adjustEditUI(0);
 
     // It's an arrow function that is called when the ARROW KEYS trigger it lmaooooooooooooooooooo (Do you get it? It's a play on words. I don't think you're get...)
     let arrowFunction = (e) => {
-        if (e.keyCode === 37) {
+        // Decrement offset on right arrow
+        if (e.keyCode === 39) {
             let offsetElement = document.getElementById(`beat${selected[0]}Offset`);
             offsetElement.value = `${parseInt(offsetElement.value) - 1}`;
             beatsObj.beats[selected[0]-1].setOffset(parseFloat(offsetElement.value), beatsObj.cl, beatsObj.c);
         }
-        else if (e.keyCode === 39) {
+        // Increment offset on left arrow
+        else if (e.keyCode === 37) {
             let offsetElement = document.getElementById(`beat${selected[0]}Offset`);
             offsetElement.value = `${parseInt(offsetElement.value) + 1}`;
             beatsObj.beats[selected[0]-1].setOffset(parseFloat(offsetElement.value), beatsObj.cl, beatsObj.c);
         }
     }
+
+    // Function for when we're done moving around
     let enterFunction = (e) => {
         if (e.keyCode === 13) {
+            // Remove the event listeners
             window.removeEventListener('keydown', arrowFunction);
-            window.removeEventListener('keydown', enterfunction);
+            window.removeEventListener('keydown', enterFunction);
+
+            // Bring back the buttons
+            adjustEditUI(selected.length);
         }
     }
 
+    // Add our listeners
     window.addEventListener('keydown', arrowFunction);
     window.addEventListener('keydown', enterFunction);
 })
