@@ -67,9 +67,9 @@ class Beat {
         }
 
         let currentCycle = this.occ[0];
-        let correctedCycle = Math.floor(this.t / baseLen);
+        let correctedCycle = Math.floor((this.t) / baseLen);
         let cycleShift = correctedCycle - currentCycle;
-        this.t -= baseLen * cycleShift;
+        this.t -= baseLen * correctedCycle;
 
         for (let i = 0; i < this.names.length; i++) {
             this.occ[i] += cycleShift;
@@ -719,17 +719,9 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 document.getElementById('editOffset').addEventListener('click', (e) => {
     document.getElementById(`beat${selected[0]}Offset`).removeAttribute('readonly');
 
-    document.getElementById('split').disabled = true;
-    document.getElementById('editOffset').disabled = true;
-    document.getElementById('move').disabled = true;
-
     document.getElementById(`beat${selected[0]}Offset`).addEventListener('change', (e) => {
         beatsObj.beats[selected[0]-1].setOffset(e.target.value, beatsObj.cl, beatsObj.c);
 
         e.target.setAttribute('readonly', 'readonly');
     }, {once: true})
-
-    document.getElementById('split').disabled = false;
-    document.getElementById('editOffset').disabled = false;
-    document.getElementById('move').disabled = false;
 })
