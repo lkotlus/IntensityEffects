@@ -377,9 +377,15 @@ let adjustEditUI = function(l) {
     // One beat selected
     else if (l === 1) {
         document.getElementById('join').disabled = true;
-        document.getElementById('split').disabled = false;
         document.getElementById('move').disabled = false;
         document.getElementById('editOffset').disabled = false;
+
+        if (beatsObj.beats[selected[0]-1].occ.length > 1) {
+            document.getElementById('split').disabled = false;
+        }
+        else {
+            document.getElementById('split').disabled = true;
+        }
     }
     // No beats selected
     else {
