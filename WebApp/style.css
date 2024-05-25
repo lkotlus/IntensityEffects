@@ -139,6 +139,8 @@ input [type="number"] {
     -moz-appearance: textfield !important;
 }
 
-input [type="number"]:read-only {
-    color: blue;
+input:read-only {
+    border: 0;
+    padding: 0;
+    outline: none;
 }
