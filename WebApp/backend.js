@@ -449,8 +449,6 @@ let press = function(beats, cl, startTime, i, e) {
         let currentCycle = Math.floor((t+1)/cl);
         let relativeT = t - (cl*currentCycle);
 
-        // Print stuff out for Logan, because he's a special boy who needs to see things in the console like a nerd
-        console.log(`Time: ${t}\nCycle: ${currentCycle}`);
         // Putting stuff in the DOM? FOR THE USER?????
         let DOMCycle = document.getElementById(`cycle${currentCycle+1}`);
         let newBeatDot = document.createElement('span');
@@ -509,9 +507,6 @@ let record = function(e) {
             beats.push([]);
         }
 
-        // Testing stuff with the console
-        console.log(`Beat interval: ${bi} milliseconds\nCycle length: ${cl} milliseconds`);
-
         // Doing timey wimey stuff
         let startTime = Date.now();
         let i = 1;
@@ -535,8 +530,6 @@ let record = function(e) {
         setTimeout(() => {
             // Remove the event listener so things aren't recorded anymore
             document.removeEventListener('keydown', handler);
-            // Be a friendly programmer and pritn stuff
-            console.log("Done!");
             // Clear the textbox
             document.getElementById('textBox').textContent = "";
             // Call the postRecording() function to continue the program
@@ -651,7 +644,6 @@ let render = function() {
         // Setting the BPM and offset for the current beat
         beatsObj.beats[i].calcBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
         beatsObj.beats[i].calcOffset(beatsObj.cl, beatsObj.c);
-        console.log(`BEAT${i+1}: ${beatsObj.beats[i].print()}`)
 
         let newWrapper = document.createElement("div");
         newWrapper.id = `beat${i+1}Wrapper`;
@@ -715,8 +707,6 @@ let rerender = function() {
             
             newElement.classList.value = `beatDot beat${i+1}`;
             oldElement.parentNode.replaceChild(newElement, oldElement);
-
-            // console.log(getEventListeners(newElement));
         }
     }
     
@@ -761,7 +751,7 @@ document.getElementById('exportButton').addEventListener('click', (e) => {
     let a = document.createElement("a"),
     url = URL.createObjectURL(file);
     a.href = url;
-    a.download = 'sickBeat.json';
+    a.download = 'lights.json';
     document.body.appendChild(a);
     a.click();
     setTimeout(function() {
@@ -776,25 +766,25 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
     let contents = await e.target.files[0].text();
     // Parsing as JSON to an object
     beatsObj = JSON.parse(contents);
-    // Dev stuff, you wouldn't understand
-    console.log(beatsObj);
+
+    // Making things beat objects instead of "dictionary objects"
+    for (let i = 0; i < beatsObj.beats.length; i++) {
+        let newBeat = new Beat(0, 0, 0);
+
+        newBeat.t = beatsObj.beats[i].t;
+        newBeat.names = beatsObj.beats[i].names;
+        newBeat.fullTime = beatsObj.beats[i].fullTime;
+        newBeat.occ = beatsObj.beats[i].occ;
+        newBeat.bpm = beatsObj.beats[i].bpm;
+        newBeat.offset = beatsObj.beats[i].offset;
+
+        beatsObj.beats[i] = newBeat;
+    }
     
     // Beat lines HTML
     document.getElementById('beatLineWrappersWrapper').innerHTML = beatsObj.linesHTML;
-    // Output HTML
-    document.getElementById('outputDiv').innerHTML = beatsObj.outputHTML;
-    allButtonPt2();
-
-    // Setting up beat interaction stuff
-    for (let i = 0; i < beatsObj.beats.length; i++) {
-        beatInteraction(i+1);
-    }
-
-    // Getting all the output collapsibles
-    outputButtons();
-
-    // Doing the beat dots
-    beatDotHighliter();
+    
+    rerender();
     
     // Entering the proper settings
     document.getElementById('bpm').value = beatsObj.bpm;
