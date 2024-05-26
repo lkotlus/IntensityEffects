@@ -9,7 +9,7 @@ input {
     background-color: #323232;
     color: #c1c1c1;
     border: none;
-    width: 2em;
+    width: 3em;
     font-size: 1em;
 }
 
@@ -25,14 +25,18 @@ h1 {
 
 #startButtonDiv {
     float: right;
-    width: 20vw;
-    height: 15vh;
+    width: 24.5vw;
+    height: 10vh;
     display: block;
+    margin-bottom: 5vh;
+    border: 1px solid #dbdbdb;
+    border-radius: 5px;
+    padding: 5px;
 }
 
 #settingsWrapper {
     float: left;
-    width: 50vw;
+    width: 69.5vw;
     height: 10vh;
     border: 1px solid #dbdbdb;
     border-radius: 5px;
