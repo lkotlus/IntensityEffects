@@ -101,7 +101,7 @@ h2 {
     display: block;
     top: 50%;
     clear: right;
-    width: 20vw;
+    width: 25vw;
     height: 50vh;
     overflow: auto;
     border: 1px solid black;
@@ -110,4 +110,37 @@ h2 {
 
 #importExportWrapper {
     float: right;
+}
+
+#editWrapper {
+    position: absolute;
+    bottom: 0;
+    padding: 5px;
+    border: 1px solid black;
+    border-top-left-radius: 5px;
+    border-bottom-style: hidden;
+    width: 90%;
+    border-top-right-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.editButton {
+    width: 20%;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input [type="number"] {
+    -moz-appearance: textfield !important;
+}
+
+input:read-only {
+    border: 0;
+    padding: 0;
+    outline: none;
 }

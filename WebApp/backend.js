@@ -4,11 +4,17 @@
 class Beat {
     // Constructor function, takes in a time t and a cycle number c
     constructor(t, c, n) {
+        // Simplified time
         this.t = t;
+        // Array of names
         this.names = [n];
+        // Array of full times
         this.fullTime = [t];
+        // Array of cycle numbers (indexed at 0)
         this.occ = [c];
+        // BPM value
         this.bpm = NaN;
+        // Offset value
         this.offset = NaN;
     }
 
@@ -26,8 +32,16 @@ class Beat {
         this.fullTime = this.fullTime.concat(b2.fullTime);
 
         for (let i = 0; i < this.names.length; i++) {
-            document.getElementById(this.names[i]).style.left = `${100*(this.t/cl)}%`
+            document.getElementById(this.names[i]).style.left = `${100*(this.t/cl)}%`;
         }
+    }
+
+    // Join used for potential joining action frfr
+    silentJoin(b2, cl) {
+        this.sync(b2, cl);
+        this.occ = this.occ.concat(b2.occ);
+        this.names = this.names.concat(b2.names);
+        this.fullTime = this.fullTime.concat(b2.fullTime);
     }
 
     // Splits beats into individual components
@@ -38,23 +52,51 @@ class Beat {
         // Looping through each occurence
         for (let i = 0; i < this.occ.length; i++) {
             // Appending a new beat to the returnVals array
-            returnVals.push(new Beat(this.fullTime[i], this.occ[i], this.names[i]));
+            let newBeat = new Beat(this.fullTime[i], this.occ[i], this.names[i]);
+            newBeat.t = this.t;
+            returnVals.push(newBeat);
         }
 
         // Returning the array
         return returnVals;
     }
 
-    // Sets the BPM for the beat
-    setBPM(baseBPM, nc, bpc) {
+    // Sets the BPM for the beat based on other variables
+    calcBPM(baseBPM, nc, bpc) {
         this.bpm = ((baseBPM * this.occ.length)/(bpc * nc)).toFixed(2);
     }
 
-    // Sets the offset for the beat
-    setOffset(baseLen, nc) {
+    // Sets the offset for the beat based on other variables
+    calcOffset(baseLen, nc) {
         let fullLen = baseLen * (nc/this.occ.length);
         let ratio = this.fullTime[0]/fullLen;
-        this.offset = (360 - (360 * ratio)).toFixed(2);
+        this.offset = Math.abs((360 - (360 * ratio)).toFixed(2));
+    }
+
+    // Sets custom offset from user input
+    setOffset(offset, baseLen, nc) {
+        let len  = baseLen * (nc / this.occ.length);
+        this.t = len * (1 - (offset / 360));
+        
+        for (let i = 0; i < this.occ.length; i++) {
+            this.fullTime[i] = (baseLen * this.occ[i]) + this.t;
+        }
+
+        let currentCycle = this.occ[0];
+        let correctedCycle = Math.floor((this.t) / baseLen);
+        let cycleShift = correctedCycle - currentCycle;
+        this.t -= baseLen * correctedCycle;
+
+        for (let i = 0; i < this.names.length; i++) {
+            this.occ[i] += cycleShift;
+            
+            let dot = document.getElementById(this.names[i]);
+            document.getElementById(this.names[i]).remove();
+
+            let newCycle = document.getElementById(`cycle${this.occ[i] + 1}`);
+            newCycle.appendChild(dot);
+            dot.style.left = `${(this.t / baseLen) * 100}%`;
+        }
     }
 
     // Prints a description of the beat (for debugging)
@@ -219,76 +261,182 @@ let allButtonPt2 = function() {
 
 // Interact with beat dot
 let dotInteract = function(e, secondHand) {
+    // Assume selected is true
+    let selected = true;
+
+    // If the color is black...
     if (e.target.style.backgroundColor === "black") {
+        // Make it blue, and selected stays true
         e.target.style.backgroundColor = "blue";
     }
     else {
+        // Otherwise, switch to black and set selected to false
         e.target.style.backgroundColor = "black";
+        selected = false;
     }
 
+    // If not called second hand [read the code in buttonInteract, it's the same]
     if (!secondHand) {
         let className;
 
         for (let i = 0; i < e.target.classList.length; i++) {
-            if (e.target.classList[i].includes("beat")) {
+            if (e.target.classList[i].includes("beat") && e.target.classList[i] !== "beatDot") {
                 className = e.target.classList[i];
             }
         }
-    
+        
         let elements = document.getElementsByClassName(className);
     
         for (let i = 0; i < elements.length; i++) {
             if (elements[i].id !== e.target.id) {
-                buttonInteract({target: elements[i]}, true)
+                if (elements[i].tagName === "BUTTON") {
+                    buttonInteract({target: elements[i]}, true);
+                }
+                else {
+                    dotInteract({target: elements[i]}, true);
+                }
             }
         }
     }
+
+    return selected;
 }
 
 // Interact with button
 let buttonInteract = function(e, secondHand) {
+    // Assume selected is true, confirmed later
+    let selected = true;
+
+    // If it's block display...
     if (e.target.nextSibling.style.display === "block") {
+        // Switch to "none" and selected is false
         e.target.nextSibling.style.display = "none";
+        selected = false;
     }
     else {
+        // Otherwise switch to "block" and selected stays true
         e.target.nextSibling.style.display = "block";
     }
 
-
+    // If this wasn't called secondhand
     if (!secondHand) {
         let className;
 
+        // Get the class name
         for (let i = 0; i < e.target.classList.length; i++) {
             if (e.target.classList[i].includes("beat")) {
                 className = e.target.classList[i];
             }
         }
     
+        // Get all the elements
         let elements = document.getElementsByClassName(className);
     
+        // Interact with them
         for (let i = 0; i < elements.length; i++) {
             if (!elements[i].classList.contains('collapsible')) {
                 dotInteract({target: elements[i]}, true);
             }
         }
     }
+
+    // Return selected
+    return selected;
+}
+
+// Code for enabling/disabling certain edit buttons
+let adjustEditUI = function(l) {
+    let testBeat;
+
+    if (l > 0) {
+        // Copy beat object
+        testBeat = new Beat(0, 0, 0);
+        testBeat.t = beatsObj.beats[selected[0]-1].t
+        testBeat.names = beatsObj.beats[selected[0]-1].names
+        testBeat.fullTime = beatsObj.beats[selected[0]-1].fullTime
+        testBeat.occ = beatsObj.beats[selected[0]-1].occ
+        testBeat.bpm = beatsObj.beats[selected[0]-1].bpm
+        testBeat.offset = beatsObj.beats[selected[0]-1].offset
+
+        // Join them
+        for (let i = 1; i < selected.length; i++) {
+            testBeat.silentJoin(beatsObj.beats[selected[i]-1]);
+        }
+    }
+    
+    // Two or more beats selected
+    if (l >= 2 && isValid(testBeat, beatsObj.c)) {
+        document.getElementById('join').disabled = false;
+        document.getElementById('split').disabled = true;
+        document.getElementById('move').disabled = true;
+        document.getElementById('editOffset').disabled = true;
+    }
+    // One beat selected
+    else if (l === 1) {
+        document.getElementById('join').disabled = true;
+        document.getElementById('move').disabled = false;
+        document.getElementById('editOffset').disabled = false;
+
+        if (beatsObj.beats[selected[0]-1].occ.length > 1) {
+            document.getElementById('split').disabled = false;
+        }
+        else {
+            document.getElementById('split').disabled = true;
+        }
+    }
+    // No beats selected
+    else {
+        document.getElementById('join').disabled = true;
+        document.getElementById('split').disabled = true;
+        document.getElementById('move').disabled = true;
+        document.getElementById('editOffset').disabled = true;
+    }
 }
 
 // Code for interacting with beats
 let beatInteraction = function(n) {
+    // Get all elements with the correct class name
     let items = document.getElementsByClassName(`beat${n}`);
 
+    // Loop through them
     for (let i = 0; i < items.length; i++) {
+        // If it's a dot...
         if (items[i].classList.contains('beatDot')) {
+            // Add a particular event listener
             items[i].addEventListener('click', (e) => {
-                dotInteract(e, false);
+                if (dotInteract(e, false)) {
+                    selected.push(n);
+                }
+                else {
+                    selected.splice(selected.indexOf(n), 1);
+                }
+
+                adjustEditUI(selected.length);
             })
         }
         else {
+            // Add a different one if it's a button
             items[i].addEventListener('click', (e) => {
-                buttonInteract(e, false);
+                if (buttonInteract(e, false)) {
+                    selected.push(n);
+                }
+                else {
+                    selected.splice(selected.indexOf(n), 1);
+                }
+
+                adjustEditUI(selected.length);
             })
         }
+    }
+}
+
+// Restricting values for offset
+let offsetChange = function(e) {
+    if (parseInt(e.target.value) > 360) {
+        e.target.value = '360';
+    }
+    else if (parseInt(e.target.value) <= 0) {
+        e.target.value = '360';
     }
 }
 
@@ -301,8 +449,6 @@ let press = function(beats, cl, startTime, i, e) {
         let currentCycle = Math.floor((t+1)/cl);
         let relativeT = t - (cl*currentCycle);
 
-        // Print stuff out for Logan, because he's a special boy who needs to see things in the console like a nerd
-        console.log(`Time: ${t}\nCycle: ${currentCycle}`);
         // Putting stuff in the DOM? FOR THE USER?????
         let DOMCycle = document.getElementById(`cycle${currentCycle+1}`);
         let newBeatDot = document.createElement('span');
@@ -317,6 +463,7 @@ let press = function(beats, cl, startTime, i, e) {
     }
 }
 
+// Recording function... duh
 let record = function(e) {
     if (e.keyCode === 13) {
         // Creating an empty array for our beats
@@ -360,9 +507,6 @@ let record = function(e) {
             beats.push([]);
         }
 
-        // Testing stuff with the console
-        console.log(`Beat interval: ${bi} milliseconds\nCycle length: ${cl} milliseconds`);
-
         // Doing timey wimey stuff
         let startTime = Date.now();
         let i = 1;
@@ -386,8 +530,6 @@ let record = function(e) {
         setTimeout(() => {
             // Remove the event listener so things aren't recorded anymore
             document.removeEventListener('keydown', handler);
-            // Be a friendly programmer and pritn stuff
-            console.log("Done!");
             // Clear the textbox
             document.getElementById('textBox').textContent = "";
             // Call the postRecording() function to continue the program
@@ -398,6 +540,8 @@ let record = function(e) {
                 document.getElementById("outputDiv").innerHTML = "<h2>Output</h2>";
                 document.getElementById("beatLineWrappersWrapper").innerHTML = "";
                 beats = [];
+                selected = [];
+                adjustEditUI()
                 document.getElementById('textBox').textContent = "Press enter to start recording...";
                 document.addEventListener('keydown', record);
             }, {once: true});
@@ -483,6 +627,10 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         }
     }
 
+    render();
+}
+
+let render = function() {
     // Getting the settings div ready to go, because it's about to get used a lot
     let outputDiv = document.getElementById("outputDiv");
 
@@ -494,9 +642,8 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
     // NOTE TO SELF: literally never go into front end development, you are very bad at it. (W3Schools CSS tutorial site GET request count for the below code: 9999999999999999999)
     for (let i = 0; i < beatsObj.beats.length; i++) {
         // Setting the BPM and offset for the current beat
-        beatsObj.beats[i].setBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
-        beatsObj.beats[i].setOffset(beatsObj.cl, beatsObj.c);
-        console.log(`BEAT${i+1}: ${beatsObj.beats[i].print()}`)
+        beatsObj.beats[i].calcBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
+        beatsObj.beats[i].calcOffset(beatsObj.cl, beatsObj.c);
 
         let newWrapper = document.createElement("div");
         newWrapper.id = `beat${i+1}Wrapper`;
@@ -511,12 +658,22 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
 
         // Creating a new text div for the collapsible of the current beat
         let newTextDiv = document.createElement("div");
-        newTextDiv.textContent = `BPM: ${beatsObj.beats[i].bpm}, Offset: ${beatsObj.beats[i].offset}`;
+        newTextDiv.textContent = `BPM: ${beatsObj.beats[i].bpm}, Offset: `;
         newTextDiv.style.display = "none";
         newTextDiv.id = `beat${i+1}Div`;
         newTextDiv.classList.add("textOutputDiv");
 
+        let newOffsetInput = document.createElement("input");
+        newOffsetInput.value = beatsObj.beats[i].offset;
+        newOffsetInput.classList.add("offsetInput");
+        newOffsetInput.id = `beat${i+1}Offset`;
+        newOffsetInput.readOnly = true;
+        newOffsetInput.addEventListener('change', (e) => {
+            offsetChange(e);
+        })
+
         // Appending all of the above elements to the settings div
+        newTextDiv.appendChild(newOffsetInput);
         newWrapper.appendChild(newButton);
         newWrapper.appendChild(newTextDiv);
         outputDiv.appendChild(newWrapper);
@@ -530,16 +687,46 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
         beatInteraction(i+1)
     }
 
-    // outputButtons();
-
     // Saving HTML so importing is easy
     beatsObj.linesHTML = document.getElementById('beatLineWrappersWrapper').innerHTML;
     beatsObj.outputHTML = document.getElementById('outputDiv').innerHTML;
+}
 
-    // beatDotHighliter();
+// Code for re rendering after a change
+let rerender = function() {
+    // Resort the beats
+    beatsObj.beats = beatsObj.beats.sort((b1, b2) => {
+        return b1.fullTime[0] - b2.fullTime[0];
+    })
+
+    // Fix class names and remove old event listeners
+    for (let i = 0; i < beatsObj.beats.length; i++) {
+        for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
+            let oldElement = document.getElementById(beatsObj.beats[i].names[j]);
+            let newElement = oldElement.cloneNode(true);
+            
+            newElement.classList.value = `beatDot beat${i+1}`;
+            oldElement.parentNode.replaceChild(newElement, oldElement);
+        }
+    }
+    
+    // Clear the output div
+    document.getElementById("outputDiv").innerHTML = "<h2>Output</h2>";
+
+    // Re render the information
+    render();
+
+    // Remove selected items
+    let dots = document.getElementsByClassName('beatDot');
+    for (let i = 0; i < dots.length; i++) {
+        dots[i].style.backgroundColor = "black";
+    }
+
+    selected = [];
 }
 
 let beatsObj = {};
+let selected = [];
 
 // Start button event listener
 document.getElementById('startBtn').addEventListener('click', (e) => {
@@ -564,7 +751,7 @@ document.getElementById('exportButton').addEventListener('click', (e) => {
     let a = document.createElement("a"),
     url = URL.createObjectURL(file);
     a.href = url;
-    a.download = 'sickBeat.json';
+    a.download = 'lights.json';
     document.body.appendChild(a);
     a.click();
     setTimeout(function() {
@@ -579,20 +766,25 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
     let contents = await e.target.files[0].text();
     // Parsing as JSON to an object
     beatsObj = JSON.parse(contents);
-    // Dev stuff, you wouldn't understand
-    console.log(beatsObj);
+
+    // Making things beat objects instead of "dictionary objects"
+    for (let i = 0; i < beatsObj.beats.length; i++) {
+        let newBeat = new Beat(0, 0, 0);
+
+        newBeat.t = beatsObj.beats[i].t;
+        newBeat.names = beatsObj.beats[i].names;
+        newBeat.fullTime = beatsObj.beats[i].fullTime;
+        newBeat.occ = beatsObj.beats[i].occ;
+        newBeat.bpm = beatsObj.beats[i].bpm;
+        newBeat.offset = beatsObj.beats[i].offset;
+
+        beatsObj.beats[i] = newBeat;
+    }
     
     // Beat lines HTML
     document.getElementById('beatLineWrappersWrapper').innerHTML = beatsObj.linesHTML;
-    // Output HTML
-    document.getElementById('outputDiv').innerHTML = beatsObj.outputHTML;
-    allButtonPt2();
-
-    // Getting all the output collapsibles
-    outputButtons();
-
-    // Doing the beat dots
-    beatDotHighliter();
+    
+    rerender();
     
     // Entering the proper settings
     document.getElementById('bpm').value = beatsObj.bpm;
@@ -600,4 +792,124 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
     document.getElementById('bpc').value = beatsObj.bpc;
     document.getElementById('tol').value = beatsObj.tol;
     document.getElementById('sl').checked = beatsObj.sl;
+})
+
+// 
+////        Edit buttons
+// 
+
+// Edit button
+document.getElementById('editOffset').addEventListener('click', (e) => {
+    // Disable other edit buttons while doing this
+    adjustEditUI(0);
+
+    // Remove the readonly attribute while changing the offset
+    document.getElementById(`beat${selected[0]}Offset`).removeAttribute('readonly');
+
+    // Listen for a change in offset
+    document.getElementById(`beat${selected[0]}Offset`).addEventListener('change', (e) => {
+        // Once detected, implement the change in the backend
+        beatsObj.beats[selected[0]-1].setOffset(parseFloat(e.target.value), beatsObj.cl, beatsObj.c);
+
+        // Bring back the readonly
+        e.target.setAttribute('readonly', 'readonly');
+
+        rerender();
+
+        // Bring back the edit buttons
+        adjustEditUI(selected.length);
+    }, {once: true})
+})
+
+// Move button
+document.getElementById('move').addEventListener('click', (e) => {
+    // Temporarily remove the edit buttons
+    adjustEditUI(0);
+
+    // It's an arrow function that is called when the ARROW KEYS trigger it lmaooooooooooooooooooo (Do you get it? It's a play on words. I don't think you're get...)
+    let arrowFunction = (e) => {
+        // Decrement offset on right arrow
+        if (e.keyCode === 39) {
+            let offsetElement = document.getElementById(`beat${selected[0]}Offset`);
+            offsetElement.value = `${parseInt(offsetElement.value) - 1}`;
+            offsetElement.dispatchEvent(new Event("change"));
+            beatsObj.beats[selected[0]-1].setOffset(parseFloat(offsetElement.value), beatsObj.cl, beatsObj.c);
+        }
+        // Increment offset on left arrow
+        else if (e.keyCode === 37) {
+            let offsetElement = document.getElementById(`beat${selected[0]}Offset`);
+            offsetElement.value = `${parseInt(offsetElement.value) + 1}`;
+            offsetElement.dispatchEvent(new Event("change"));
+            beatsObj.beats[selected[0]-1].setOffset(parseFloat(offsetElement.value), beatsObj.cl, beatsObj.c);
+        }
+    }
+
+    // Function for when we're done moving around
+    let enterFunction = (e) => {
+        if (e.keyCode === 13) {
+            // Remove the event listeners
+            window.removeEventListener('keydown', arrowFunction);
+            window.removeEventListener('keydown', enterFunction);
+
+            // Rerender
+            rerender();
+
+            // Bring back the buttons
+            adjustEditUI(selected.length);
+        }
+    }
+
+    // Add our listeners
+    window.addEventListener('keydown', arrowFunction);
+    window.addEventListener('keydown', enterFunction);
+})
+
+// Split button
+document.getElementById('split').addEventListener('click', (e) => {
+    // Get our target beat
+    let targetBeat = beatsObj.beats[selected[0]-1];
+    
+    // Remove it from the array
+    beatsObj.beats.splice(selected[0]-1, 1);
+
+    // Concatenate individual beats with the others
+    beatsObj.beats = beatsObj.beats.concat(targetBeat.split());
+
+    // rerender
+    rerender()
+
+    // Adjust buttons
+    adjustEditUI(selected.length);
+})
+
+// Join button
+document.getElementById('join').addEventListener('click', (e) => {
+    // Making sure order is kept later on
+    selected = selected.sort((a, b) => {
+        return a - b;
+    })
+
+    // Saving the base beat that others are joined into
+    let newBeat = beatsObj.beats[selected[0]-1];
+    
+    // Join each selected beat to the first, then remove the beat
+    for (let i = 1; i < selected.length; i++) {
+        newBeat.join(beatsObj.beats[selected[i]-1], beatsObj.cl);
+    }
+
+    // Remove old beats from the array
+    for (let i = 1; i < selected.length; i++) {
+        beatsObj.beats.splice(selected[i]-1, 1);
+    }
+
+    // Fix the offset
+    if (newBeat.offset === 0) {
+        newBeat.offset = 360;
+    }
+
+    // Rerender
+    rerender();
+
+    // Adjust buttons
+    adjustEditUI(selected.length);
 })
