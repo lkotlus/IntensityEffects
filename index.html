@@ -3,38 +3,43 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="./style.css">
+        <link rel="stylesheet" href="./styles/style.css">
         <title>Intensity Effects</title>
     </head>
     <body>
         <h1>Intensity Effects Engine of Doom</h1>
 
         <div id="settingsWrapper">
-            <button type="button" id="settingsButton">Settings</button>
+            <h2 id="settingsHeader">Settings</h2>
             <div id="settingsDiv" class="content">
-                <label for="bpm">BPM:</label>
-                <input type="number" id="bpm" name="bpm" value="111" required>
+                <div>
+                    <label for="bpm">BPM:</label><input type="number" id="bpm" name="bpm" value="111" required>
+                </div>
 
-                <label for="cycles">Cycles:</label>
-                <input type="number" id="c" name="cycles" value="2" required>
+                <div>
+                    <label for="cycles">Cycles:</label><input type="number" id="c" name="cycles" value="2" required>
+                </div>
 
-                <label for="bpc">BPC:</label>
-                <input type="number" id="bpc" name="bpc" value="4" required>
+                <div>
+                    <label for="bpc">BPC:</label><input type="number" id="bpc" name="bpc" value="4" required>
+                </div>
 
-                <label for="tolerance">Tolerance:</label>
-                <input type="number" id="tol" name="tolerance" value="70" required>
+                <div>
+                    <label for="tolerance">Tolerance:</label><input type="number" id="tol" name="tolerance" value="70" required>
+                </div>
 
-                <label for="startLate">Start Late:</label>
-                <input type="checkbox" id="sl" name="startLate">
+                <div>
+                    <label for="startLate">Start Late:</label><input type="checkbox" id="sl" name="startLate">
+                </div>
             </div>
         </div>
 
         <div id="startButtonDiv">
-            <button id="startBtn">Start</button>
+            <button id="startBtn" class="button">Start</button>
             <div id="importExportWrapper">
-               <button><label for="importButton" class="button">Import</label></button>
+               <button class="button"><label for="importButton">Import</label></button>
                 <input type="file" style="visibility: hidden; height: 0px; width: 0px;" id="importButton" accept="application/JSON">
-                <button id="exportButton">Export</button>
+                <button id="exportButton" class="button">Export</button>
             </div>
             <p id="textBox"></p>
         </div>
@@ -46,27 +51,20 @@
             </div>
 
             <div id="linesBox">
+                <div id="labelWrapper">
+                    <h2>Beats</h2>
+                </div>
                 <div id="beatLineWrappersWrapper"></div>
                 <div id="editWrapper">
-                    <button id="move" class="editButton" disabled>Move</button>
-                    <button id="editOffset" class="editButton" disabled>Edit Offset</button>
-                    <button id="split" class="editButton" disabled>Split</button>
-                    <button id="join" class="editButton" disabled>Join</button>
+                    <button id="move" class="editButton button" disabled>Move</button>
+                    <button id="editOffset" class="editButton button" disabled>Edit Offset</button>
+                    <button id="split" class="editButton button" disabled>Split</button>
+                    <button id="join" class="editButton button" disabled>Join</button>
                 </div>
             </div>
         </div>
     </body>
-    <script>
-        document.getElementById("settingsButton").addEventListener("click", function() {
-            let div = document.getElementById("settingsDiv");
-
-            if (div.style.display === "block") {
-                div.style.display = "none";
-            }
-            else {
-                div.style.display = "block";
-            }
-        })
-    </script>
-    <script src="./backend.js"></script>
+    <script src="./js/beat.js"></script>
+    <script src="./js/helpers.js"></script>
+    <script src="./js/backend.js"></script>
 </html>

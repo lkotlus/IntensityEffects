@@ -1,11 +1,20 @@
-h1 {
-    text-align: center;
+body {
+    background-color: #323232;
+    color: #c1c1c1;
+    font-family: 'Courier New', 'Courier New', Courier, monospace;
+    font-size: 1em;
 }
 
-.content {
-    padding: 0 18px;
-    display: none;
-    overflow: hidden;
+input {
+    background-color: #323232;
+    color: #c1c1c1;
+    border: none;
+    width: 3em;
+    font-size: 1em;
+}
+
+h1 {
+    text-align: center;
 }
 
 .cycle {
@@ -16,20 +25,33 @@ h1 {
 
 #startButtonDiv {
     float: right;
-    width: 20vw;
-    height: 15vh;
+    width: 24.5vw;
+    height: 10vh;
     display: block;
+    margin-bottom: 5vh;
+    border: 1px solid #dbdbdb;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+#settingsHeader {
+    padding-bottom: 1%;
 }
 
 #settingsWrapper {
     float: left;
-    width: 50vw;
-    height: 15vh;
+    width: 69.5vw;
+    height: 10vh;
+    border: 1px solid #dbdbdb;
+    border-radius: 5px;
+    padding: 5px;
 }
 
 #settingsDiv {
     float: left;
     width: 100%;
+    display: flex;
+    justify-content: space-evenly;
 }
 
 #bigWrapper {
@@ -79,7 +101,6 @@ h2 {
     transform: translateY(40%);
     height: 10px;
     width: 10px;
-    background-color: black;
     border-radius: 50%;
 }
 
@@ -90,8 +111,8 @@ h2 {
     justify-content: center;
     position: relative;
     width: 70vw;
-    height: 50vh;
-    border: 1px solid black;
+    height: 60vh;
+    border: 1px solid #dbdbdb;
     border-radius: 5px;
     overflow: auto;
 }
@@ -102,9 +123,9 @@ h2 {
     top: 50%;
     clear: right;
     width: 25vw;
-    height: 50vh;
+    height: 60vh;
     overflow: auto;
-    border: 1px solid black;
+    border: 1px solid #dbdbdb;
     border-radius: 5px;
 }
 
@@ -112,11 +133,16 @@ h2 {
     float: right;
 }
 
+#labelWrapper {
+    position: absolute;
+    top: 0;
+}
+
 #editWrapper {
     position: absolute;
     bottom: 0;
     padding: 5px;
-    border: 1px solid black;
+    border: 1px solid #dbdbdb;
     border-top-left-radius: 5px;
     border-bottom-style: hidden;
     width: 90%;
@@ -143,4 +169,45 @@ input:read-only {
     border: 0;
     padding: 0;
     outline: none;
+}
+
+.button {
+    background-color: #bbbbbb;
+    border: none;
+    border: 1px solid;
+    border-radius: 2px;
+}
+.button:disabled {
+    background-color: #565656
+}
+.button:enabled:hover {
+    border: 1px solid #ff6a0080;
+    border-radius: 2px;
+}
+
+.collapsible {
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    position: relative;
+}
+.collapsible::before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 10px solid #bbbbbb;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.3s ease;
+}
+.collapsible.expanded::before {
+    border-left: 10px solid #e35400;
+    transform: translate(-50%, -50%) rotate(90deg);
 }
