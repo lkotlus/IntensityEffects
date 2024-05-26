@@ -363,8 +363,6 @@ let adjustEditUI = function(l) {
         for (let i = 1; i < selected.length; i++) {
             testBeat.silentJoin(beatsObj.beats[selected[i]-1]);
         }
-
-        console.log(testBeat);
     }
     
     // Two or more beats selected
@@ -703,6 +701,41 @@ let render = function() {
     beatsObj.outputHTML = document.getElementById('outputDiv').innerHTML;
 }
 
+// Code for re rendering after a change
+let rerender = function() {
+    // Resort the beats
+    beatsObj.beats = beatsObj.beats.sort((b1, b2) => {
+        return b1.fullTime[0] - b2.fullTime[0];
+    })
+
+    // Fix class names and remove old event listeners
+    for (let i = 0; i < beatsObj.beats.length; i++) {
+        for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
+            let oldElement = document.getElementById(beatsObj.beats[i].names[j]);
+            let newElement = oldElement.cloneNode(true);
+            
+            newElement.classList.value = `beatDot beat${i+1}`;
+            oldElement.parentNode.replaceChild(newElement, oldElement);
+
+            // console.log(getEventListeners(newElement));
+        }
+    }
+    
+    // Clear the output div
+    document.getElementById("outputDiv").innerHTML = "<h2>Output</h2>";
+
+    // Re render the information
+    render();
+
+    // Remove selected items
+    let dots = document.getElementsByClassName('beatDot');
+    for (let i = 0; i < dots.length; i++) {
+        dots[i].style.backgroundColor = "black";
+    }
+
+    selected = [];
+}
+
 let beatsObj = {};
 let selected = [];
 
@@ -792,6 +825,8 @@ document.getElementById('editOffset').addEventListener('click', (e) => {
         // Bring back the readonly
         e.target.setAttribute('readonly', 'readonly');
 
+        rerender();
+
         // Bring back the edit buttons
         adjustEditUI(selected.length);
     }, {once: true})
@@ -826,6 +861,9 @@ document.getElementById('move').addEventListener('click', (e) => {
             // Remove the event listeners
             window.removeEventListener('keydown', arrowFunction);
             window.removeEventListener('keydown', enterFunction);
+
+            // Rerender
+            rerender();
 
             // Bring back the buttons
             adjustEditUI(selected.length);
