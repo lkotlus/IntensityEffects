@@ -1,11 +1,20 @@
-h1 {
-    text-align: center;
+body {
+    background-color: #323232;
+    color: #c1c1c1;
+    font-family: 'Courier New', 'Courier New', Courier, monospace;
+    font-size: 1em;
 }
 
-.content {
-    padding: 0 18px;
-    display: none;
-    overflow: hidden;
+input {
+    background-color: #323232;
+    color: #c1c1c1;
+    border: none;
+    width: 2em;
+    font-size: 1em;
+}
+
+h1 {
+    text-align: center;
 }
 
 .cycle {
@@ -24,12 +33,17 @@ h1 {
 #settingsWrapper {
     float: left;
     width: 50vw;
-    height: 15vh;
+    height: 10vh;
+    border: 1px solid #dbdbdb;
+    border-radius: 5px;
+    padding: 5px;
 }
 
 #settingsDiv {
     float: left;
     width: 100%;
+    display: flex;
+    justify-content: space-evenly;
 }
 
 #bigWrapper {
@@ -79,7 +93,6 @@ h2 {
     transform: translateY(40%);
     height: 10px;
     width: 10px;
-    background-color: black;
     border-radius: 50%;
 }
 
@@ -91,7 +104,7 @@ h2 {
     position: relative;
     width: 70vw;
     height: 50vh;
-    border: 1px solid black;
+    border: 1px solid #dbdbdb;
     border-radius: 5px;
     overflow: auto;
 }
@@ -104,7 +117,7 @@ h2 {
     width: 25vw;
     height: 50vh;
     overflow: auto;
-    border: 1px solid black;
+    border: 1px solid #dbdbdb;
     border-radius: 5px;
 }
 
@@ -116,7 +129,7 @@ h2 {
     position: absolute;
     bottom: 0;
     padding: 5px;
-    border: 1px solid black;
+    border: 1px solid #dbdbdb;
     border-top-left-radius: 5px;
     border-bottom-style: hidden;
     width: 90%;
