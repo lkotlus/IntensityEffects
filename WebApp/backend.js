@@ -19,23 +19,20 @@ class Beat {
     }
 
     // Syncs the times of two beats (averages the two)
-    sync(b2, cl) {
+    sync(b2) {
         this.t = (this.t + b2.t)/2;
         b2.t = this.t;
     }
 
     // Joins two beats (syncs the time and concatonates the cycles)
     join(b2, cl) {
-        this.sync(b2, cl);
+        this.sync(b2);
         this.occ = this.occ.concat(b2.occ);
         this.names = this.names.concat(b2.names);
         this.fullTime = this.fullTime.concat(b2.fullTime);
 
         for (let i = 0; i < this.names.length; i++) {
             document.getElementById(this.names[i]).style.left = `${100*(this.t/cl)}%`;
-        }
-        for (let i = 0; i < b2.names.length; i++) {
-            document.getElementById(b2.names[i]).style.left = `${100 * (this.t/cl)}%`;
         }
     }
 
@@ -55,7 +52,9 @@ class Beat {
         // Looping through each occurence
         for (let i = 0; i < this.occ.length; i++) {
             // Appending a new beat to the returnVals array
-            returnVals.push(new Beat(this.fullTime[i], this.occ[i], this.names[i]));
+            let newBeat = new Beat(this.fullTime[i], this.occ[i], this.names[i]);
+            newBeat.t = this.t;
+            returnVals.push(newBeat);
         }
 
         // Returning the array
@@ -71,7 +70,7 @@ class Beat {
     calcOffset(baseLen, nc) {
         let fullLen = baseLen * (nc/this.occ.length);
         let ratio = this.fullTime[0]/fullLen;
-        this.offset = (360 - (360 * ratio)).toFixed(2);
+        this.offset = Math.abs((360 - (360 * ratio)).toFixed(2));
     }
 
     // Sets custom offset from user input
@@ -873,4 +872,54 @@ document.getElementById('move').addEventListener('click', (e) => {
     // Add our listeners
     window.addEventListener('keydown', arrowFunction);
     window.addEventListener('keydown', enterFunction);
+})
+
+// Split button
+document.getElementById('split').addEventListener('click', (e) => {
+    // Get our target beat
+    let targetBeat = beatsObj.beats[selected[0]-1];
+    
+    // Remove it from the array
+    beatsObj.beats.splice(selected[0]-1, 1);
+
+    // Concatenate individual beats with the others
+    beatsObj.beats = beatsObj.beats.concat(targetBeat.split());
+
+    // rerender
+    rerender()
+
+    // Adjust buttons
+    adjustEditUI(selected.length);
+})
+
+// Join button
+document.getElementById('join').addEventListener('click', (e) => {
+    // Making sure order is kept later on
+    selected = selected.sort((a, b) => {
+        return a - b;
+    })
+
+    // Saving the base beat that others are joined into
+    let newBeat = beatsObj.beats[selected[0]-1];
+    
+    // Join each selected beat to the first, then remove the beat
+    for (let i = 1; i < selected.length; i++) {
+        newBeat.join(beatsObj.beats[selected[i]-1], beatsObj.cl);
+    }
+
+    // Remove old beats from the array
+    for (let i = 1; i < selected.length; i++) {
+        beatsObj.beats.splice(selected[i]-1, 1);
+    }
+
+    // Fix the offset
+    if (newBeat.offset === 0) {
+        newBeat.offset = 360;
+    }
+
+    // Rerender
+    rerender();
+
+    // Adjust buttons
+    adjustEditUI(selected.length);
 })
