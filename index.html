@@ -10,7 +10,7 @@
         <h1>Intensity Effects Engine of Doom</h1>
 
         <div id="settingsWrapper">
-            <h2>Settings</h2>
+            <h2 id="settingsHeader">Settings</h2>
             <div id="settingsDiv" class="content">
                 <div>
                     <label for="bpm">BPM:</label><input type="number" id="bpm" name="bpm" value="111" required>
@@ -35,11 +35,11 @@
         </div>
 
         <div id="startButtonDiv">
-            <button id="startBtn">Start</button>
+            <button id="startBtn" class="button">Start</button>
             <div id="importExportWrapper">
-               <button><label for="importButton" class="button">Import</label></button>
+               <button class="button"><label for="importButton">Import</label></button>
                 <input type="file" style="visibility: hidden; height: 0px; width: 0px;" id="importButton" accept="application/JSON">
-                <button id="exportButton">Export</button>
+                <button id="exportButton" class="button">Export</button>
             </div>
             <p id="textBox"></p>
         </div>
@@ -53,10 +53,10 @@
             <div id="linesBox">
                 <div id="beatLineWrappersWrapper"></div>
                 <div id="editWrapper">
-                    <button id="move" class="editButton" disabled>Move</button>
-                    <button id="editOffset" class="editButton" disabled>Edit Offset</button>
-                    <button id="split" class="editButton" disabled>Split</button>
-                    <button id="join" class="editButton" disabled>Join</button>
+                    <button id="move" class="editButton button" disabled>Move</button>
+                    <button id="editOffset" class="editButton button" disabled>Edit Offset</button>
+                    <button id="split" class="editButton button" disabled>Split</button>
+                    <button id="join" class="editButton button" disabled>Join</button>
                 </div>
             </div>
         </div>

@@ -212,6 +212,7 @@ let buttonInteract = function(e, secondHand) {
         // Otherwise switch to "block" and selected stays true
         e.target.nextSibling.style.display = "block";
     }
+    e.target.classList.toggle('expanded');
 
     // If this wasn't called secondhand
     if (!secondHand) {
@@ -530,8 +531,8 @@ let render = function() {
     let outputDiv = document.getElementById("outputDiv");
 
     // Adding an expand/collapse all button
-    allButtonPt1();
-    allButtonPt2();
+    // allButtonPt1();
+    // allButtonPt2();
 
     // Looping through things to calculate BPM and offset. Also doing DOM manipulation directly afterwards.
     // NOTE TO SELF: literally never go into front end development, you are very bad at it. (W3Schools CSS tutorial site GET request count for the below code: 9999999999999999999)
@@ -546,7 +547,6 @@ let render = function() {
 
         // Creating a new button for the collapsible of the current beat
         let newButton = document.createElement("button");
-        newButton.textContent = `Beat ${i+1}`;
         newButton.classList.add("collapsible");
         newButton.classList.add(`beat${i+1}`)
         newButton.id = `beat${i+1}Button`;

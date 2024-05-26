@@ -34,6 +34,10 @@ h1 {
     padding: 5px;
 }
 
+#settingsHeader {
+    padding-bottom: 1%;
+}
+
 #settingsWrapper {
     float: left;
     width: 69.5vw;
@@ -160,4 +164,45 @@ input:read-only {
     border: 0;
     padding: 0;
     outline: none;
+}
+
+.button {
+    background-color: #bbbbbb;
+    border: none;
+    border: 1px solid;
+    border-radius: 2px;
+}
+.button:disabled {
+    background-color: #565656
+}
+.button:enabled:hover {
+    border: 1px solid #ff6a0080;
+    border-radius: 2px;
+}
+
+.collapsible {
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    position: relative;
+}
+.collapsible::before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 10px solid #bbbbbb;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.3s ease;
+}
+.collapsible.expanded::before {
+    border-left: 10px solid #e35400;
+    transform: translate(-50%, -50%) rotate(90deg);
 }
