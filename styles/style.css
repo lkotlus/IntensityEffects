@@ -1,7 +1,6 @@
 body {
     background-color: #323232;
     color: #c1c1c1;
-    font-family: 'Courier New', 'Courier New', Courier, monospace;
     font-size: 1em;
 }
 
@@ -191,6 +190,7 @@ input:read-only {
     border: none;
     border: 1px solid;
     border-radius: 2px;
+    outline: none;
 }
 .button:disabled {
     background-color: #565656
@@ -248,4 +248,8 @@ input:read-only {
 
 .textOutputDiv {
     text-indent: 2em;
+}
+
+* {
+    font-family: Arial, Helvetica, sans-serif;
 }
