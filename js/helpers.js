@@ -118,42 +118,6 @@ let insertLoaction = function(b, arr) {
     return arr.length;
 }
 
-// Creates an expand or collapse all button
-let allButtonPt1 = function() {
-    // Getting the settings div ready to go, because it's about to get used a lot
-    let outputDiv = document.getElementById("outputDiv");
-
-    // Expand or collapse all button
-    let allButton = document.createElement('button');
-    allButton.id = 'allButton';
-    allButton.innerText = "Expand all";
-    allButton.style.marginLeft = "5px";
-    outputDiv.appendChild(allButton);
-}
-// Expand all functionality
-let allButtonPt2 = function() {
-    document.getElementById('allButton').addEventListener('click', (e) => {
-        let displayCase;
-
-        if (e.target.textContent === "Expand all") {
-            displayCase = "none";
-            e.target.textContent = "Collapse all";
-        }
-        else {
-            displayCase = "block"
-            e.target.textContent = "Expand all";
-        }
-
-        let allButtons = document.getElementsByClassName("collapsible");
-
-        for (let i = 0; i < allButtons.length; i++) {
-            if (allButtons[i].nextSibling.style.display === displayCase) {
-                allButtons[i].click();
-            }
-        }
-    })
-}
-
 // Interact with beat dot
 let dotInteract = function(e, secondHand) {
     // Assume selected is true
