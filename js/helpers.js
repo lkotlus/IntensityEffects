@@ -203,14 +203,14 @@ let buttonInteract = function(e, secondHand) {
     let selected = true;
 
     // If it's block display...
-    if (e.target.nextSibling.style.display === "block") {
+    if (e.target.parentElement.nextSibling.style.display === "block") {
         // Switch to "none" and selected is false
-        e.target.nextSibling.style.display = "none";
+        e.target.parentElement.nextSibling.style.display = "none";
         selected = false;
     }
     else {
         // Otherwise switch to "block" and selected stays true
-        e.target.nextSibling.style.display = "block";
+        e.target.parentElement.nextSibling.style.display = "block";
     }
     e.target.classList.toggle('expanded');
 
@@ -369,7 +369,7 @@ let record = function(e) {
         document.removeEventListener('keydown', record);
 
         // Letting the user know what's up
-        document.getElementById('textBox').textContent = "Press enter, left shift, or right shift to record beats during the time interval...";
+        document.getElementById('startBtn').style.background = "#783535";
 
         // Getting values
         let bpm = Number(document.getElementById('bpm').value);
@@ -426,8 +426,7 @@ let record = function(e) {
         setTimeout(() => {
             // Remove the event listener so things aren't recorded anymore
             document.removeEventListener('keydown', handler);
-            // Clear the textbox
-            document.getElementById('textBox').textContent = "";
+            document.getElementById('startBtn').style.background = null;
             // Call the postRecording() function to continue the program
             postRecording(beats, bpm, c, bpc, sl, bi, cl, tol);
 
@@ -438,7 +437,7 @@ let record = function(e) {
                 beats = [];
                 selected = [];
                 adjustEditUI()
-                document.getElementById('textBox').textContent = "Press enter to start recording...";
+                document.getElementById('startBtn').style.background = "#6dc163";
                 document.addEventListener('keydown', record);
             }, {once: true});
         }, cl*c);
@@ -545,10 +544,18 @@ let render = function() {
         newWrapper.id = `beat${i+1}Wrapper`;
         newWrapper.classList.add("beatWrapper");
 
+        let newInnerWrapper = document.createElement("div");
+        newInnerWrapper.classList.add("innerWrapper");
+
+        let newP = document.createElement("div");
+        newP.textContent = `Beat ${i+1}`;
+        newP.classList.add("beatLabel");
+
         // Creating a new button for the collapsible of the current beat
         let newButton = document.createElement("button");
         newButton.classList.add("collapsible");
-        newButton.classList.add(`beat${i+1}`)
+        newButton.classList.add(`beat${i+1}`);
+        newButton.classList.add("beatButton")
         newButton.id = `beat${i+1}Button`;
 
         // Creating a new text div for the collapsible of the current beat
@@ -569,7 +576,9 @@ let render = function() {
 
         // Appending all of the above elements to the settings div
         newTextDiv.appendChild(newOffsetInput);
-        newWrapper.appendChild(newButton);
+        newInnerWrapper.appendChild(newP);
+        newInnerWrapper.appendChild(newButton);
+        newWrapper.appendChild(newInnerWrapper);
         newWrapper.appendChild(newTextDiv);
         outputDiv.appendChild(newWrapper);
 

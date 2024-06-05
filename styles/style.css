@@ -29,9 +29,28 @@ h1 {
     height: 10vh;
     display: block;
     margin-bottom: 5vh;
-    border: 1px solid #dbdbdb;
-    border-radius: 5px;
+    /* border: 1px solid #dbdbdb;
+    border-radius: 5px; */
     padding: 5px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#startBtn {
+    height: 100%;
+    width: 70%;
+}
+
+#importExportWrapper {
+    float: right;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+}
+
+.importExport {
+    width: 100%;
+    height: 50%;
 }
 
 #settingsHeader {
@@ -129,10 +148,6 @@ h2 {
     border-radius: 5px;
 }
 
-#importExportWrapper {
-    float: right;
-}
-
 #labelWrapper {
     position: absolute;
     top: 0;
@@ -224,4 +239,13 @@ input:read-only {
     background: #dbdbdb;
     border: 3px solid #323232;
     border-radius: 5px;
+}
+
+.innerWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.textOutputDiv {
+    text-indent: 2em;
 }

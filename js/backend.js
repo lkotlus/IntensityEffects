@@ -6,7 +6,7 @@ document.getElementById('startBtn').addEventListener('click', (e) => {
     document.getElementById("outputDiv").innerHTML = "<h2>Output</h2>";
     document.getElementById("beatLineWrappersWrapper").innerHTML = "";
     // Adds some text
-    document.getElementById('textBox').textContent = "Press enter to start recording...";
+    document.getElementById('startBtn').style.background = "#6dc163";
     // Adds a listener for keystrokes
     document.addEventListener('keydown', record);
 }, /*Only executes once*/ {once: true})
