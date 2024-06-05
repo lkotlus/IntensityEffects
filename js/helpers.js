@@ -537,6 +537,7 @@ let render = function() {
         newOffsetInput.addEventListener('change', (e) => {
             offsetChange(e);
         })
+        newOffsetInput.type = "number";
 
         // Appending all of the above elements to the settings div
         newTextDiv.appendChild(newOffsetInput);
