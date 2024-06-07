@@ -272,29 +272,33 @@ let beatInteraction = function(n) {
         // If it's a dot...
         if (items[i].classList.contains('beatDot')) {
             // Add a particular event listener
-            items[i].addEventListener('click', (e) => {
-                if (dotInteract(e, false)) {
-                    selected.push(n);
-                }
-                else {
-                    selected.splice(selected.indexOf(n), 1);
-                }
+            if (ALLOW_SELECTION) {
+                items[i].addEventListener('click', (e) => {
+                    if (dotInteract(e, false)) {
+                        selected.push(n);
+                    }
+                    else {
+                        selected.splice(selected.indexOf(n), 1);
+                    }
 
-                adjustEditUI(selected.length);
-            })
+                    adjustEditUI(selected.length);
+                })
+            }
         }
         else {
             // Add a different one if it's a button
-            items[i].addEventListener('click', (e) => {
-                if (buttonInteract(e, false)) {
-                    selected.push(n);
-                }
-                else {
-                    selected.splice(selected.indexOf(n), 1);
-                }
+            if (ALLOW_SELECTION) {
+                items[i].addEventListener('click', (e) => {
+                    if (buttonInteract(e, false)) {
+                        selected.push(n);
+                    }
+                    else {
+                        selected.splice(selected.indexOf(n), 1);
+                    }
 
-                adjustEditUI(selected.length);
-            })
+                    adjustEditUI(selected.length);
+                })
+            }
         }
     }
 }
