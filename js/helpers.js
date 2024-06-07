@@ -403,6 +403,7 @@ let record = function(e) {
                 adjustEditUI()
                 document.getElementById('startBtn').style.background = "#6dc163";
                 document.addEventListener('keydown', record);
+                e.target.blur();
             }, {once: true});
         }, cl*c);
     }

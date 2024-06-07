@@ -9,6 +9,8 @@ document.getElementById('startBtn').addEventListener('click', (e) => {
     document.getElementById('startBtn').style.background = "#6dc163";
     // Adds a listener for keystrokes
     document.addEventListener('keydown', record);
+    // Remove keyboard focus
+    e.target.blur();
 }, /*Only executes once*/ {once: true})
 
 // Exporting stuff
