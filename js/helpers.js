@@ -409,7 +409,7 @@ let record = function(e) {
                 document.getElementById("beatLineWrappersWrapper").innerHTML = "";
                 beats = [];
                 selected = [];
-                adjustEditUI()
+                adjustEditUI(selected.length)
                 document.getElementById('startBtn').style.background = "#6dc163";
                 document.addEventListener('keydown', record);
                 e.target.blur();
@@ -591,7 +591,7 @@ let render = function() {
     beatsObj.linesHTML = document.getElementById('beatLineWrappersWrapper').innerHTML;
     beatsObj.outputHTML = document.getElementById('outputDiv').innerHTML;
 
-    adjustEditUI();
+    adjustEditUI(selected.length);
 }
 
 // Code for re rendering after a change
@@ -626,5 +626,5 @@ let rerender = function() {
 
     selected = [];
 
-    adjustEditUI();
+    adjustEditUI(selected.length);
 }

@@ -93,6 +93,41 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 ////        Edit buttons
 // 
 
+// Add button (THIS SUCKS, PUT IT OFF AS MUCH AS POSSIBLE)
+// document.getElementById('add').addEventListener('click', (e) => {
+//     // Disable other edits
+//     adjustEditUI(0);
+
+//     // Get cycle info
+//     cycles = document.getElementsByClassName('beatLineWrapper');
+//     width = cycles[0].clientWidth;
+
+//     let handle = function(e) {
+//         let xCord = e.offsetX;
+
+//         if (xCord < 0) {
+//             xCord = 0;
+//         }
+
+//         let offset = xCord / width;
+
+//         let newBeat = new Beat()
+//     }
+
+//     for (let i = 0; i < cycles.length; i++) {
+//         cycles[i].addEventListener('click', handle);
+//     }
+// })
+
+// Remove button (THIS ALSO SUCKS)
+// document.getElementById('remove').addEventListener('click', (e) => {
+//     for (let i = 0; i < selected.length; i++) {
+//         beatsObj.beats.splice(selected[i]-1-i, 1);
+//     }
+
+//     rerender();
+// })
+
 // Edit button
 document.getElementById('editOffset').addEventListener('click', (e) => {
     // Disable other edit buttons while doing this
