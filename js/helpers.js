@@ -396,7 +396,7 @@ let record = function(e) {
 
             // Recreating that event listener for the start button
             document.getElementById('startBtn').addEventListener('click', (e) => {
-                document.getElementById("outputDiv").innerHTML = "<h2>Output</h2><div id=\"allDiv\"><button id=\"expandAll\" class=\"expandCollapseAll\">Expand All</button><button id=\"collapseAll\" class=\"expandCollapseAll\">Collapse All</button></div>";
+                document.getElementById("outputDiv").innerHTML = "<h2>Output</h2><div id=\"allDiv\"><button id=\"expandAll\" class=\"expandCollapseAll button\">Expand All</button><button id=\"collapseAll\" class=\"expandCollapseAll button\">Collapse All</button></div>";
                 document.getElementById("beatLineWrappersWrapper").innerHTML = "";
                 beats = [];
                 selected = [];

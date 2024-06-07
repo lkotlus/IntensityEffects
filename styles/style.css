@@ -44,7 +44,7 @@ h1 {
 
 #startBtn {
     height: 100%;
-    width: 70%;
+    width: 68%;
 }
 
 #importExportWrapper {
@@ -195,7 +195,7 @@ input:read-only {
 .button {
     background-color: #bbbbbb;
     border: none;
-    border: 1px solid;
+    border: 1px solid #000000;
     border-radius: 2px;
     outline: none;
 }
@@ -203,7 +203,7 @@ input:read-only {
     background-color: #565656
 }
 .button:enabled:hover {
-    border: 1px solid #ff6a0080;
+    background-color: #888888;
     border-radius: 2px;
 }
 

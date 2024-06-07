@@ -3,7 +3,7 @@
 // Start button event listener
 document.getElementById('startBtn').addEventListener('click', (e) => {
     // Clearing the HTML
-    document.getElementById("outputDiv").innerHTML = "<h2>Output</h2><div id=\"allDiv\"><button id=\"expandAll\" class=\"expandCollapseAll\">Expand All</button><button id=\"collapseAll\" class=\"expandCollapseAll\">Collapse All</button></div>";
+    document.getElementById("outputDiv").innerHTML = "<h2>Output</h2><div id=\"allDiv\"><button id=\"expandAll\" class=\"expandCollapseAll button\">Expand All</button><button id=\"collapseAll\" class=\"expandCollapseAll button\">Collapse All</button></div>";
     document.getElementById("beatLineWrappersWrapper").innerHTML = "";
     // Adds some text
     document.getElementById('startBtn').style.background = "#6dc163";
