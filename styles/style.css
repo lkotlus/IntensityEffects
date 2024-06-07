@@ -235,7 +235,7 @@ input:read-only {
 }
 
 *::-webkit-scrollbar {
-    width: 10px;
+    width: 13px;
 }
 
 *::-webkit-scrollbar-track {
@@ -245,8 +245,9 @@ input:read-only {
 *::-webkit-scrollbar-thumb {
     background: #dbdbdb;
     border: 3px solid #323232;
-    border-radius: 5px;
+    border-radius: 10px;
 }
+
 
 .innerWrapper {
     display: flex;
