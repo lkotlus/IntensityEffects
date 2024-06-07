@@ -252,8 +252,17 @@ let adjustEditUI = function(l) {
         }
     }
     // No beats selected
-    else {
+    else if (l === 0) {
         document.getElementById('add').disabled = false;
+        document.getElementById('remove').disabled = true;
+        document.getElementById('join').disabled = true;
+        document.getElementById('split').disabled = true;
+        document.getElementById('move').disabled = true;
+        document.getElementById('editOffset').disabled = true;
+    }
+    // Intentionally turn everything off
+    else {
+        document.getElementById('add').disabled = true;
         document.getElementById('remove').disabled = true;
         document.getElementById('join').disabled = true;
         document.getElementById('split').disabled = true;

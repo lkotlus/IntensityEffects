@@ -96,7 +96,7 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 // Add button (THIS SUCKS, PUT IT OFF AS MUCH AS POSSIBLE)
 // document.getElementById('add').addEventListener('click', (e) => {
 //     // Disable other edits
-//     adjustEditUI(0);
+//     adjustEditUI(-1);
 
 //     // Get cycle info
 //     cycles = document.getElementsByClassName('beatLineWrapper');
@@ -131,7 +131,7 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 // Edit button
 document.getElementById('editOffset').addEventListener('click', (e) => {
     // Disable other edit buttons while doing this
-    adjustEditUI(0);
+    adjustEditUI(-1);
 
     // Remove the readonly attribute while changing the offset
     document.getElementById(`beat${selected[0]}Offset`).removeAttribute('readonly');
@@ -154,7 +154,7 @@ document.getElementById('editOffset').addEventListener('click', (e) => {
 // Move button
 document.getElementById('move').addEventListener('click', (e) => {
     // Temporarily remove the edit buttons
-    adjustEditUI(0);
+    adjustEditUI(-1);
 
     // It's an arrow function that is called when the ARROW KEYS trigger it lmaooooooooooooooooooo (Do you get it? It's a play on words. I don't think you're get...)
     let arrowFunction = (e) => {
