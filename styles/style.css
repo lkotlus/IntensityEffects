@@ -18,6 +18,9 @@ input[type="number"] {
     width: 3em;
     font-size: 1em;
 }
+input[type="checkbox"] {
+    accent-color: #e35400;
+  }
 
 h1 {
     text-align: center;
@@ -152,6 +155,7 @@ h2 {
     overflow: auto;
     border: 1px solid #dbdbdb;
     border-radius: 5px;
+    scrollbar-gutter: stable;
 }
 
 #labelWrapper {
@@ -173,7 +177,7 @@ h2 {
 }
 
 .editButton {
-    width: 20%;
+    width: 15%;
 }
 
 input::-webkit-outer-spin-button,
@@ -269,5 +273,5 @@ input:read-only {
 }
 
 .expandCollapseAll {
-    width: 35%;
+    width: 40%;
 }

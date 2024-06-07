@@ -225,14 +225,21 @@ let adjustEditUI = function(l) {
     }
     
     // Two or more beats selected
-    if (l >= 2 && isValid(testBeat, beatsObj.c)) {
-        document.getElementById('join').disabled = false;
+    if (l >= 2) {
+        document.getElementById('add').disabled = true;
+        document.getElementById('remove').disabled = false;
         document.getElementById('split').disabled = true;
         document.getElementById('move').disabled = true;
         document.getElementById('editOffset').disabled = true;
+
+        if (isValid(testBeat, beatsObj.c)) {
+            document.getElementById('join').disabled = false;
+        }
     }
     // One beat selected
     else if (l === 1) {
+        document.getElementById('add').disabled = true;
+        document.getElementById('remove').disabled = false;
         document.getElementById('join').disabled = true;
         document.getElementById('move').disabled = false;
         document.getElementById('editOffset').disabled = false;
@@ -246,6 +253,8 @@ let adjustEditUI = function(l) {
     }
     // No beats selected
     else {
+        document.getElementById('add').disabled = false;
+        document.getElementById('remove').disabled = true;
         document.getElementById('join').disabled = true;
         document.getElementById('split').disabled = true;
         document.getElementById('move').disabled = true;
@@ -581,6 +590,8 @@ let render = function() {
     // Saving HTML so importing is easy
     beatsObj.linesHTML = document.getElementById('beatLineWrappersWrapper').innerHTML;
     beatsObj.outputHTML = document.getElementById('outputDiv').innerHTML;
+
+    adjustEditUI();
 }
 
 // Code for re rendering after a change
@@ -614,4 +625,6 @@ let rerender = function() {
     }
 
     selected = [];
+
+    adjustEditUI();
 }
