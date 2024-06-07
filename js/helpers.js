@@ -396,7 +396,7 @@ let record = function(e) {
 
             // Recreating that event listener for the start button
             document.getElementById('startBtn').addEventListener('click', (e) => {
-                document.getElementById("outputDiv").innerHTML = "<h2>Output</h2>";
+                document.getElementById("outputDiv").innerHTML = "<h2>Output</h2><div id=\"allDiv\"><button id=\"expandAll\" class=\"expandCollapseAll\">Expand All</button><button id=\"collapseAll\" class=\"expandCollapseAll\">Collapse All</button></div>";
                 document.getElementById("beatLineWrappersWrapper").innerHTML = "";
                 beats = [];
                 selected = [];
@@ -404,6 +404,27 @@ let record = function(e) {
                 document.getElementById('startBtn').style.background = "#6dc163";
                 document.addEventListener('keydown', record);
                 e.target.blur();
+
+                document.getElementById('expandAll').addEventListener('click', (e) => {
+                    console.log("HEY");
+                    for (let i = 0; i < beatsObj.beats.length; i++) {
+                        let current = document.getElementById(`beat${i+1}Button`);
+                
+                        if (!current.classList.contains("expanded")) {
+                            current.click();
+                        }
+                    }
+                })
+                
+                document.getElementById('collapseAll').addEventListener('click', (e) => {
+                    for (let i = 0; i < beatsObj.beats.length; i++) {
+                        let current = document.getElementById(`beat${i+1}Button`);
+                
+                        if (current.classList.contains("expanded")) {
+                            current.click();
+                        }
+                    }
+                })
             }, {once: true});
         }, cl*c);
     }

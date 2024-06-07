@@ -3,7 +3,7 @@
 // Start button event listener
 document.getElementById('startBtn').addEventListener('click', (e) => {
     // Clearing the HTML
-    document.getElementById("outputDiv").innerHTML = "<h2>Output</h2>";
+    document.getElementById("outputDiv").innerHTML = "<h2>Output</h2><div id=\"allDiv\"><button id=\"expandAll\" class=\"expandCollapseAll\">Expand All</button><button id=\"collapseAll\" class=\"expandCollapseAll\">Collapse All</button></div>";
     document.getElementById("beatLineWrappersWrapper").innerHTML = "";
     // Adds some text
     document.getElementById('startBtn').style.background = "#6dc163";
@@ -11,6 +11,27 @@ document.getElementById('startBtn').addEventListener('click', (e) => {
     document.addEventListener('keydown', record);
     // Remove keyboard focus
     e.target.blur();
+
+    document.getElementById('expandAll').addEventListener('click', (e) => {
+        console.log("HEY");
+        for (let i = 0; i < beatsObj.beats.length; i++) {
+            let current = document.getElementById(`beat${i+1}Button`);
+    
+            if (!current.classList.contains("expanded")) {
+                current.click();
+            }
+        }
+    })
+    
+    document.getElementById('collapseAll').addEventListener('click', (e) => {
+        for (let i = 0; i < beatsObj.beats.length; i++) {
+            let current = document.getElementById(`beat${i+1}Button`);
+    
+            if (current.classList.contains("expanded")) {
+                current.click();
+            }
+        }
+    })
 }, /*Only executes once*/ {once: true})
 
 // Exporting stuff

@@ -261,3 +261,13 @@ input:read-only {
 * {
     font-family: Arial, Helvetica, sans-serif;
 }
+
+#allDiv {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.expandCollapseAll {
+    width: 35%;
+}
