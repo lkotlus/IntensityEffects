@@ -37,9 +37,9 @@
         <div id="startButtonDiv">
             <button id="startBtn" class="button">Start</button>
             <div id="importExportWrapper">
-               <button class="button"><label for="importButton">Import</label></button>
+               <button class="button importExport"><label for="importButton">Import</label></button>
                 <input type="file" style="visibility: hidden; height: 0px; width: 0px;" id="importButton" accept="application/JSON">
-                <button id="exportButton" class="button">Export</button>
+                <button id="exportButton" class="button importExport">Export</button>
             </div>
             <p id="textBox"></p>
         </div>
@@ -47,6 +47,10 @@
         <div id="bigWrapper">
             <div id="outputDiv">
                 <h2>Output</h2>
+                <div id="allDiv">
+                    <button id="expandAll" class="expandCollapseAll button">Expand All</button>
+                    <button id="collapseAll" class="expandCollapseAll button">Collapse All</button>
+                </div>
                 <!-- Where the settings go -->
             </div>
 
@@ -56,6 +60,8 @@
                 </div>
                 <div id="beatLineWrappersWrapper"></div>
                 <div id="editWrapper">
+                    <button id="add" class="editButton button" disabled>Add</button>
+                    <button id="remove" class="editButton button" disabled>Remove</button>
                     <button id="move" class="editButton button" disabled>Move</button>
                     <button id="editOffset" class="editButton button" disabled>Edit Offset</button>
                     <button id="split" class="editButton button" disabled>Split</button>

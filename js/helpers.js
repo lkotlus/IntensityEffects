@@ -118,42 +118,6 @@ let insertLoaction = function(b, arr) {
     return arr.length;
 }
 
-// Creates an expand or collapse all button
-let allButtonPt1 = function() {
-    // Getting the settings div ready to go, because it's about to get used a lot
-    let outputDiv = document.getElementById("outputDiv");
-
-    // Expand or collapse all button
-    let allButton = document.createElement('button');
-    allButton.id = 'allButton';
-    allButton.innerText = "Expand all";
-    allButton.style.marginLeft = "5px";
-    outputDiv.appendChild(allButton);
-}
-// Expand all functionality
-let allButtonPt2 = function() {
-    document.getElementById('allButton').addEventListener('click', (e) => {
-        let displayCase;
-
-        if (e.target.textContent === "Expand all") {
-            displayCase = "none";
-            e.target.textContent = "Collapse all";
-        }
-        else {
-            displayCase = "block"
-            e.target.textContent = "Expand all";
-        }
-
-        let allButtons = document.getElementsByClassName("collapsible");
-
-        for (let i = 0; i < allButtons.length; i++) {
-            if (allButtons[i].nextSibling.style.display === displayCase) {
-                allButtons[i].click();
-            }
-        }
-    })
-}
-
 // Interact with beat dot
 let dotInteract = function(e, secondHand) {
     // Assume selected is true
@@ -203,14 +167,14 @@ let buttonInteract = function(e, secondHand) {
     let selected = true;
 
     // If it's block display...
-    if (e.target.nextSibling.style.display === "block") {
+    if (e.target.parentElement.nextSibling.style.display === "block") {
         // Switch to "none" and selected is false
-        e.target.nextSibling.style.display = "none";
+        e.target.parentElement.nextSibling.style.display = "none";
         selected = false;
     }
     else {
         // Otherwise switch to "block" and selected stays true
-        e.target.nextSibling.style.display = "block";
+        e.target.parentElement.nextSibling.style.display = "block";
     }
     e.target.classList.toggle('expanded');
 
@@ -261,14 +225,21 @@ let adjustEditUI = function(l) {
     }
     
     // Two or more beats selected
-    if (l >= 2 && isValid(testBeat, beatsObj.c)) {
-        document.getElementById('join').disabled = false;
+    if (l >= 2) {
+        document.getElementById('add').disabled = true;
+        document.getElementById('remove').disabled = false;
         document.getElementById('split').disabled = true;
         document.getElementById('move').disabled = true;
         document.getElementById('editOffset').disabled = true;
+
+        if (isValid(testBeat, beatsObj.c)) {
+            document.getElementById('join').disabled = false;
+        }
     }
     // One beat selected
     else if (l === 1) {
+        document.getElementById('add').disabled = true;
+        document.getElementById('remove').disabled = false;
         document.getElementById('join').disabled = true;
         document.getElementById('move').disabled = false;
         document.getElementById('editOffset').disabled = false;
@@ -281,7 +252,18 @@ let adjustEditUI = function(l) {
         }
     }
     // No beats selected
+    else if (l === 0) {
+        document.getElementById('add').disabled = false;
+        document.getElementById('remove').disabled = true;
+        document.getElementById('join').disabled = true;
+        document.getElementById('split').disabled = true;
+        document.getElementById('move').disabled = true;
+        document.getElementById('editOffset').disabled = true;
+    }
+    // Intentionally turn everything off
     else {
+        document.getElementById('add').disabled = true;
+        document.getElementById('remove').disabled = true;
         document.getElementById('join').disabled = true;
         document.getElementById('split').disabled = true;
         document.getElementById('move').disabled = true;
@@ -299,29 +281,33 @@ let beatInteraction = function(n) {
         // If it's a dot...
         if (items[i].classList.contains('beatDot')) {
             // Add a particular event listener
-            items[i].addEventListener('click', (e) => {
-                if (dotInteract(e, false)) {
-                    selected.push(n);
-                }
-                else {
-                    selected.splice(selected.indexOf(n), 1);
-                }
+            if (ALLOW_SELECTION) {
+                items[i].addEventListener('click', (e) => {
+                    if (dotInteract(e, false)) {
+                        selected.push(n);
+                    }
+                    else {
+                        selected.splice(selected.indexOf(n), 1);
+                    }
 
-                adjustEditUI(selected.length);
-            })
+                    adjustEditUI(selected.length);
+                })
+            }
         }
         else {
             // Add a different one if it's a button
-            items[i].addEventListener('click', (e) => {
-                if (buttonInteract(e, false)) {
-                    selected.push(n);
-                }
-                else {
-                    selected.splice(selected.indexOf(n), 1);
-                }
+            if (ALLOW_SELECTION) {
+                items[i].addEventListener('click', (e) => {
+                    if (buttonInteract(e, false)) {
+                        selected.push(n);
+                    }
+                    else {
+                        selected.splice(selected.indexOf(n), 1);
+                    }
 
-                adjustEditUI(selected.length);
-            })
+                    adjustEditUI(selected.length);
+                })
+            }
         }
     }
 }
@@ -369,7 +355,7 @@ let record = function(e) {
         document.removeEventListener('keydown', record);
 
         // Letting the user know what's up
-        document.getElementById('textBox').textContent = "Press enter, left shift, or right shift to record beats during the time interval...";
+        document.getElementById('startBtn').style.background = "#783535";
 
         // Getting values
         let bpm = Number(document.getElementById('bpm').value);
@@ -426,20 +412,41 @@ let record = function(e) {
         setTimeout(() => {
             // Remove the event listener so things aren't recorded anymore
             document.removeEventListener('keydown', handler);
-            // Clear the textbox
-            document.getElementById('textBox').textContent = "";
+            document.getElementById('startBtn').style.background = null;
             // Call the postRecording() function to continue the program
             postRecording(beats, bpm, c, bpc, sl, bi, cl, tol);
 
             // Recreating that event listener for the start button
             document.getElementById('startBtn').addEventListener('click', (e) => {
-                document.getElementById("outputDiv").innerHTML = "<h2>Output</h2>";
+                document.getElementById("outputDiv").innerHTML = "<h2>Output</h2><div id=\"allDiv\"><button id=\"expandAll\" class=\"expandCollapseAll button\">Expand All</button><button id=\"collapseAll\" class=\"expandCollapseAll button\">Collapse All</button></div>";
                 document.getElementById("beatLineWrappersWrapper").innerHTML = "";
                 beats = [];
                 selected = [];
-                adjustEditUI()
-                document.getElementById('textBox').textContent = "Press enter to start recording...";
+                adjustEditUI(selected.length)
+                document.getElementById('startBtn').style.background = "#6dc163";
                 document.addEventListener('keydown', record);
+                e.target.blur();
+
+                document.getElementById('expandAll').addEventListener('click', (e) => {
+                    console.log("HEY");
+                    for (let i = 0; i < beatsObj.beats.length; i++) {
+                        let current = document.getElementById(`beat${i+1}Button`);
+                
+                        if (!current.classList.contains("expanded")) {
+                            current.click();
+                        }
+                    }
+                })
+                
+                document.getElementById('collapseAll').addEventListener('click', (e) => {
+                    for (let i = 0; i < beatsObj.beats.length; i++) {
+                        let current = document.getElementById(`beat${i+1}Button`);
+                
+                        if (current.classList.contains("expanded")) {
+                            current.click();
+                        }
+                    }
+                })
             }, {once: true});
         }, cl*c);
     }
@@ -545,10 +552,18 @@ let render = function() {
         newWrapper.id = `beat${i+1}Wrapper`;
         newWrapper.classList.add("beatWrapper");
 
+        let newInnerWrapper = document.createElement("div");
+        newInnerWrapper.classList.add("innerWrapper");
+
+        let newP = document.createElement("div");
+        newP.textContent = `Beat ${i+1}`;
+        newP.classList.add("beatLabel");
+
         // Creating a new button for the collapsible of the current beat
         let newButton = document.createElement("button");
         newButton.classList.add("collapsible");
-        newButton.classList.add(`beat${i+1}`)
+        newButton.classList.add(`beat${i+1}`);
+        newButton.classList.add("beatButton")
         newButton.id = `beat${i+1}Button`;
 
         // Creating a new text div for the collapsible of the current beat
@@ -566,10 +581,13 @@ let render = function() {
         newOffsetInput.addEventListener('change', (e) => {
             offsetChange(e);
         })
+        newOffsetInput.type = "number";
 
         // Appending all of the above elements to the settings div
         newTextDiv.appendChild(newOffsetInput);
-        newWrapper.appendChild(newButton);
+        newInnerWrapper.appendChild(newP);
+        newInnerWrapper.appendChild(newButton);
+        newWrapper.appendChild(newInnerWrapper);
         newWrapper.appendChild(newTextDiv);
         outputDiv.appendChild(newWrapper);
 
@@ -585,6 +603,8 @@ let render = function() {
     // Saving HTML so importing is easy
     beatsObj.linesHTML = document.getElementById('beatLineWrappersWrapper').innerHTML;
     beatsObj.outputHTML = document.getElementById('outputDiv').innerHTML;
+
+    adjustEditUI(selected.length);
 }
 
 // Code for re rendering after a change
@@ -618,4 +638,6 @@ let rerender = function() {
     }
 
     selected = [];
+
+    adjustEditUI(selected.length);
 }

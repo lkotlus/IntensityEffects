@@ -3,12 +3,35 @@
 // Start button event listener
 document.getElementById('startBtn').addEventListener('click', (e) => {
     // Clearing the HTML
-    document.getElementById("outputDiv").innerHTML = "<h2>Output</h2>";
+    document.getElementById("outputDiv").innerHTML = "<h2>Output</h2><div id=\"allDiv\"><button id=\"expandAll\" class=\"expandCollapseAll button\">Expand All</button><button id=\"collapseAll\" class=\"expandCollapseAll button\">Collapse All</button></div>";
     document.getElementById("beatLineWrappersWrapper").innerHTML = "";
     // Adds some text
-    document.getElementById('textBox').textContent = "Press enter to start recording...";
+    document.getElementById('startBtn').style.background = "#6dc163";
     // Adds a listener for keystrokes
     document.addEventListener('keydown', record);
+    // Remove keyboard focus
+    e.target.blur();
+
+    document.getElementById('expandAll').addEventListener('click', (e) => {
+        console.log("HEY");
+        for (let i = 0; i < beatsObj.beats.length; i++) {
+            let current = document.getElementById(`beat${i+1}Button`);
+    
+            if (!current.classList.contains("expanded")) {
+                current.click();
+            }
+        }
+    })
+    
+    document.getElementById('collapseAll').addEventListener('click', (e) => {
+        for (let i = 0; i < beatsObj.beats.length; i++) {
+            let current = document.getElementById(`beat${i+1}Button`);
+    
+            if (current.classList.contains("expanded")) {
+                current.click();
+            }
+        }
+    })
 }, /*Only executes once*/ {once: true})
 
 // Exporting stuff
@@ -70,10 +93,45 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 ////        Edit buttons
 // 
 
+// Add button (THIS SUCKS, PUT IT OFF AS MUCH AS POSSIBLE)
+// document.getElementById('add').addEventListener('click', (e) => {
+//     // Disable other edits
+//     adjustEditUI(-1);
+
+//     // Get cycle info
+//     cycles = document.getElementsByClassName('beatLineWrapper');
+//     width = cycles[0].clientWidth;
+
+//     let handle = function(e) {
+//         let xCord = e.offsetX;
+
+//         if (xCord < 0) {
+//             xCord = 0;
+//         }
+
+//         let offset = xCord / width;
+
+//         let newBeat = new Beat()
+//     }
+
+//     for (let i = 0; i < cycles.length; i++) {
+//         cycles[i].addEventListener('click', handle);
+//     }
+// })
+
+// Remove button (THIS ALSO SUCKS)
+// document.getElementById('remove').addEventListener('click', (e) => {
+//     for (let i = 0; i < selected.length; i++) {
+//         beatsObj.beats.splice(selected[i]-1-i, 1);
+//     }
+
+//     rerender();
+// })
+
 // Edit button
 document.getElementById('editOffset').addEventListener('click', (e) => {
     // Disable other edit buttons while doing this
-    adjustEditUI(0);
+    adjustEditUI(-1);
 
     // Remove the readonly attribute while changing the offset
     document.getElementById(`beat${selected[0]}Offset`).removeAttribute('readonly');
@@ -96,7 +154,7 @@ document.getElementById('editOffset').addEventListener('click', (e) => {
 // Move button
 document.getElementById('move').addEventListener('click', (e) => {
     // Temporarily remove the edit buttons
-    adjustEditUI(0);
+    adjustEditUI(-1);
 
     // It's an arrow function that is called when the ARROW KEYS trigger it lmaooooooooooooooooooo (Do you get it? It's a play on words. I don't think you're get...)
     let arrowFunction = (e) => {
