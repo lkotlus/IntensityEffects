@@ -95,37 +95,17 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 
 // Add button (THIS SUCKS, but you need to do it)
 // document.getElementById('add').addEventListener('click', (e) => {
-//     // Disable other edits
-//     adjustEditUI(-1);
-
-//     // Get cycle info
-//     cycles = document.getElementsByClassName('beatLineWrapper');
-//     width = cycles[0].clientWidth;
-
-//     let handle = function(e) {
-//         let xCord = e.offsetX;
-
-//         if (xCord < 0) {
-//             xCord = 0;
-//         }
-
-//         let offset = xCord / width;
-
-//         let newBeat = new Beat()
-//     }
-
-//     for (let i = 0; i < cycles.length; i++) {
-//         cycles[i].addEventListener('click', handle);
-//     }
+    // Create beat and calculate id/class numbers
+    // Traditional loop (through Beat objects) starting at calculated id number, increment all ids
+    // Traditional loop (through collapsibles) starting at calculated class number, increment all ids
+    // Insert beat with calculated values
 // })
 
 // Remove button (THIS ALSO SUCKS)
 // document.getElementById('remove').addEventListener('click', (e) => {
-//     for (let i = 0; i < selected.length; i++) {
-//         beatsObj.beats.splice(selected[i]-1-i, 1);
-//     }
-
-//     rerender();
+    // Remove all instances of selected class
+    // Traditional loop (through Beat objects) starting at 0, overwrite all ids to i+1
+    // Traditional loop (through collapsibles) starting at 0, overwrite all class numbers to i+1
 // })
 
 // Edit button
