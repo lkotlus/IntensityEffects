@@ -128,7 +128,7 @@ document.getElementById('remove').addEventListener('click', (e) => {
     }
 })
 
-// Edit button
+// Edit offset button
 document.getElementById('editOffset').addEventListener('click', (e) => {
     // Disable other edit buttons while doing this
     adjustEditUI(-1);
