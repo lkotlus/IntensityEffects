@@ -626,7 +626,7 @@ let rerender = function() {
     }
     
     // Clear the output div
-    document.getElementById("outputDiv").innerHTML = "<h2>Output</h2>";
+    document.getElementById("outputDiv").innerHTML = `<h2>Output</h2><div id="allDiv"><button id="expandAll" class="expandCollapseAll button">Expand All</button><button id="collapseAll" class="expandCollapseAll button">Collapse All</button></div>`;
 
     // Re render the information
     render();
@@ -640,4 +640,25 @@ let rerender = function() {
     selected = [];
 
     adjustEditUI(selected.length);
+
+    document.getElementById('expandAll').addEventListener('click', (e) => {
+        console.log("HEY");
+        for (let i = 0; i < beatsObj.beats.length; i++) {
+            let current = document.getElementById(`beat${i+1}Button`);
+    
+            if (!current.classList.contains("expanded")) {
+                current.click();
+            }
+        }
+    })
+    
+    document.getElementById('collapseAll').addEventListener('click', (e) => {
+        for (let i = 0; i < beatsObj.beats.length; i++) {
+            let current = document.getElementById(`beat${i+1}Button`);
+    
+            if (current.classList.contains("expanded")) {
+                current.click();
+            }
+        }
+    })
 }
