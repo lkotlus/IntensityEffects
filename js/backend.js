@@ -94,19 +94,39 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 // 
 
 // Add button (THIS SUCKS, but you need to do it)
-// document.getElementById('add').addEventListener('click', (e) => {
+document.getElementById('add').addEventListener('click', (e) => {
     // Create beat and calculate id/class numbers
     // Traditional loop (through Beat objects) starting at calculated id number, increment all ids
     // Traditional loop (through collapsibles) starting at calculated class number, increment all ids
     // Insert beat with calculated values
-// })
+
+        // Get target class
+        let classList = document.getElementById(`beat${selected[0]}`).classList;
+        let targetClass;
+        for (let i = 0; i < classList.length; i++) {
+            console.log(classList[i])
+            if (classList[i].includes("beat")) {
+                targetClass = classList[i];
+            }
+        }
+})
 
 // Remove button (THIS ALSO SUCKS)
-// document.getElementById('remove').addEventListener('click', (e) => {
+document.getElementById('remove').addEventListener('click', (e) => {
     // Remove all instances of selected class
     // Traditional loop (through Beat objects) starting at 0, overwrite all ids to i+1
     // Traditional loop (through collapsibles) starting at 0, overwrite all class numbers to i+1
-// })
+
+    // Get target class
+    let classList = document.getElementById(`beat${selected[0]}`).classList;
+    let targetClass;
+    for (let i = 0; i < classList.length; i++) {
+        console.log(classList[i])
+        if (classList[i].includes("beat")) {
+            targetClass = classList[i];
+        }
+    }
+})
 
 // Edit button
 document.getElementById('editOffset').addEventListener('click', (e) => {

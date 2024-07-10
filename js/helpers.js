@@ -227,7 +227,7 @@ let adjustEditUI = function(l) {
     // Two or more beats selected
     if (l >= 2) {
         document.getElementById('add').disabled = true;
-        document.getElementById('remove').disabled = false;
+        document.getElementById('remove').disabled = true;
         document.getElementById('split').disabled = true;
         document.getElementById('move').disabled = true;
         document.getElementById('editOffset').disabled = true;
