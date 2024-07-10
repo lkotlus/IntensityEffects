@@ -184,7 +184,7 @@ let buttonInteract = function(e, secondHand) {
 
         // Get the class name
         for (let i = 0; i < e.target.classList.length; i++) {
-            if (e.target.classList[i].includes("beat")) {
+            if (e.target.classList[i].includes("beat") && !e.target.classList[i].includes("Button")) {
                 className = e.target.classList[i];
             }
         }
