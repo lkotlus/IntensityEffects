@@ -93,7 +93,7 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 ////        Edit buttons
 // 
 
-// Add button (THIS SUCKS, PUT IT OFF AS MUCH AS POSSIBLE)
+// Add button (THIS SUCKS, but you need to do it)
 // document.getElementById('add').addEventListener('click', (e) => {
 //     // Disable other edits
 //     adjustEditUI(-1);
