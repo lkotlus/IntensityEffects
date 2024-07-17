@@ -104,7 +104,6 @@ document.getElementById('add').addEventListener('click', (e) => {
         let classList = document.getElementById(`beat${selected[0]}`).classList;
         let targetClass;
         for (let i = 0; i < classList.length; i++) {
-            console.log(classList[i])
             if (classList[i].includes("beat")) {
                 targetClass = classList[i];
             }
@@ -121,11 +120,44 @@ document.getElementById('remove').addEventListener('click', (e) => {
     let classList = document.getElementById(`beat${selected[0]}`).classList;
     let targetClass;
     for (let i = 0; i < classList.length; i++) {
-        console.log(classList[i])
         if (classList[i].includes("beat")) {
             targetClass = classList[i];
         }
     }
+
+    // Get index
+    let index = parseInt(targetClass[targetClass.length-1])-1;
+
+    // Remove from beatsObj
+    beatsObj.beats.splice(index, 1);
+
+    // Remove from DOM
+    let elements = document.getElementsByClassName(targetClass);
+    while (elements[0]) {
+        elements[0].parentNode.removeChild(elements[0]);
+    }
+
+    // Update names in beatsObj, classnames, and ids
+    for (let i = index; i < beatsObj.beats.length; i++) {
+        // Names
+        for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
+            beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j][beatsObj.beats[i].names[j].length-1])-1}`;
+        }
+
+        // Classnames
+        let elements = Array.from(document.getElementsByClassName(`beat${i+1}`));
+        for (let j = 0; j < elements.length; j++) {
+            elements[j].classList.remove(`beat${i+1}`);
+            elements[j].classList.add(`beat${i}`);
+
+            // Ids
+            elements[j].id = `beat${parseInt(elements[j].id[elements[j].id.length-1])-1}`;
+        }
+    }
+
+    selected = [];
+    adjustEditUI(0);
+    rerender();
 })
 
 // Edit offset button
