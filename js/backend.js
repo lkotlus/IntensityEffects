@@ -236,6 +236,8 @@ document.getElementById('split').addEventListener('click', (e) => {
     // Concatenate individual beats with the others
     beatsObj.beats = beatsObj.beats.concat(targetBeat.split());
 
+    selected = [];
+
     // rerender
     rerender()
 
@@ -267,6 +269,8 @@ document.getElementById('join').addEventListener('click', (e) => {
     if (newBeat.offset === 0) {
         newBeat.offset = 360;
     }
+
+    selected = [];
 
     // Rerender
     rerender();
