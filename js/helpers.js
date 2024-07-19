@@ -208,19 +208,13 @@ let buttonInteract = function(e, secondHand) {
 let adjustEditUI = function(l) {
     let testBeat;
 
+    // Creating a test beat to see if you can join two selected beats
     if (l > 0) {
-        // Copy beat object
-        testBeat = new Beat(0, 0, 0);
-        testBeat.t = beatsObj.beats[selected[0]-1].t
-        testBeat.names = beatsObj.beats[selected[0]-1].names
-        testBeat.fullTime = beatsObj.beats[selected[0]-1].fullTime
-        testBeat.occ = beatsObj.beats[selected[0]-1].occ
-        testBeat.bpm = beatsObj.beats[selected[0]-1].bpm
-        testBeat.offset = beatsObj.beats[selected[0]-1].offset
+        // Constructing a spoof beat object of just occurences.
+        testBeat = {occ: []};
 
-        // Join them
-        for (let i = 1; i < selected.length; i++) {
-            testBeat.silentJoin(beatsObj.beats[selected[i]-1]);
+        for (let i = 0; i < selected.length; i++) {
+            testBeat = testBeat.occ.concat(selected[i].occ);
         }
     }
     
@@ -536,10 +530,6 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
 let render = function() {
     // Getting the settings div ready to go, because it's about to get used a lot
     let outputDiv = document.getElementById("outputDiv");
-
-    // Adding an expand/collapse all button
-    // allButtonPt1();
-    // allButtonPt2();
 
     // Looping through things to calculate BPM and offset. Also doing DOM manipulation directly afterwards.
     // NOTE TO SELF: literally never go into front end development, you are very bad at it. (W3Schools CSS tutorial site GET request count for the below code: 9999999999999999999)
