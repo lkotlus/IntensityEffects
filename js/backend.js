@@ -13,7 +13,6 @@ document.getElementById('startBtn').addEventListener('click', (e) => {
     e.target.blur();
 
     document.getElementById('expandAll').addEventListener('click', (e) => {
-        console.log("HEY");
         for (let i = 0; i < beatsObj.beats.length; i++) {
             let current = document.getElementById(`beat${i+1}Button`);
     
@@ -138,17 +137,18 @@ document.getElementById('remove').addEventListener('click', (e) => {
     }
 
     // Update names in beatsObj, classnames, and ids
-    for (let i = index; i < beatsObj.beats.length; i++) {
+    for (let i = index; i < beatsObj.beats.length; i++) {        
         // Names
         for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
             beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j][beatsObj.beats[i].names[j].length-1])-1}`;
         }
 
         // Classnames
-        let elements = Array.from(document.getElementsByClassName(`beat${i+1}`));
+        let elements = Array.from(document.getElementsByClassName(`beat${i+2}`));
+        // console.log(elements);
         for (let j = 0; j < elements.length; j++) {
-            elements[j].classList.remove(`beat${i+1}`);
-            elements[j].classList.add(`beat${i}`);
+            elements[j].classList.remove(`beat${i+2}`);
+            elements[j].classList.add(`beat${i+1}`);
 
             // Ids
             elements[j].id = `beat${parseInt(elements[j].id[elements[j].id.length-1])-1}`;
