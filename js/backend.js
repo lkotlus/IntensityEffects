@@ -109,12 +109,8 @@ document.getElementById('add').addEventListener('click', (e) => {
         }
 })
 
-// Remove button (THIS ALSO SUCKS)
+// Remove button (IT ACTUALLY WORKS!!!!!!!)
 document.getElementById('remove').addEventListener('click', (e) => {
-    // Remove all instances of selected class
-    // Traditional loop (through Beat objects) starting at 0, overwrite all ids to i+1
-    // Traditional loop (through collapsibles) starting at 0, overwrite all class numbers to i+1
-
     // Get target class
     let classList = document.getElementById(`beat${selected[0]}`).classList;
     let targetClass;
