@@ -214,11 +214,11 @@ let adjustEditUI = function(l) {
         testBeat = {occ: []};
 
         for (let i = 0; i < selected.length; i++) {
-            console.log(testBeat.occ);
-            testBeat = testBeat.occ.concat(selected[i].occ);
+            testBeat.occ = testBeat.occ.concat(beatsObj.beats[selected[i]-1].occ);
         }
 
         document.getElementById('add').disabled = true;
+
         document.getElementById('remove').disabled = true;
         document.getElementById('split').disabled = true;
         document.getElementById('move').disabled = true;
