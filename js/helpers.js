@@ -207,19 +207,17 @@ let buttonInteract = function(e, secondHand) {
 // Code for enabling/disabling certain edit buttons
 let adjustEditUI = function(l) {
     let testBeat;
-
-    // Creating a test beat to see if you can join two selected beats
-    if (l > 0) {
+    
+    // Two or more beats selected
+    if (l >= 2) {
         // Constructing a spoof beat object of just occurences.
         testBeat = {occ: []};
 
         for (let i = 0; i < selected.length; i++) {
+            console.log(testBeat.occ);
             testBeat = testBeat.occ.concat(selected[i].occ);
         }
-    }
-    
-    // Two or more beats selected
-    if (l >= 2) {
+
         document.getElementById('add').disabled = true;
         document.getElementById('remove').disabled = true;
         document.getElementById('split').disabled = true;

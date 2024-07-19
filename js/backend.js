@@ -145,7 +145,6 @@ document.getElementById('remove').addEventListener('click', (e) => {
 
         // Classnames
         let elements = Array.from(document.getElementsByClassName(`beat${i+2}`));
-        // console.log(elements);
         for (let j = 0; j < elements.length; j++) {
             elements[j].classList.remove(`beat${i+2}`);
             elements[j].classList.add(`beat${i+1}`);
