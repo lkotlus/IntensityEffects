@@ -124,32 +124,41 @@ let realAddFunction = function(e) {
     newBeat.calcBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
     newBeat.calcOffset(beatsObj.cl, beatsObj.c);
 
-    // Append the new beat to the beats array and sort the array (lazy solution, but low risk)
-    beatsObj.beats.push(newBeat);
-    beatsObj.beats.sort((b1, b2) => {
-        return b1.fullTime[0] - b2.fullTime[0];
-    })
+    console.log(newBeat.fullTime);
 
-    // Get the index of the new beat and add the last attribute to our new beat object
-    let beatIndex = beatsObj.beats.indexOf(newBeat)
-    beatsObj.beats[beatIndex].names = [`beat${beatIndex+1}`];
+    // Get insertion index, add the last attribute to our new beat object, and insert the new beat
+    let beatIndex;
+    for (let i = 0; i < beatsObj.beats.length; i++) {
+        if (beatsObj.beats[i+1] === undefined) {
+            beatIndex = i+1;
+        }
+        else if ((beatsObj.beats[i].fullTime[0] < newBeat.fullTime[0]) && (beatsObj.beats[i+1].fullTime[0] > newBeat.fullTime[0])) {
+            beatIndex = i+1;
+            break;
+        }
+    }
+    newBeat.names = [`beat${beatIndex+1}`];
+    beatsObj.beats.splice(beatIndex, 0, newBeat);
+    console.log(beatIndex);
 
     // Fix other ids/classnames
     // for (let i = beatsObj.beats.length; i >= beatIndex; i++) {
-        // // Names
-        // for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
-        //     beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j][beatsObj.beats[i].names[j].length-1])-1}`;
-        // }
+    //     // Names
+    //     for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
+    //         beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j].slice(4))+1}`;
+    //     }
 
-        // // Classnames
-        // let elements = Array.from(document.getElementsByClassName(`beat${i+2}`));
-        // for (let j = 0; j < elements.length; j++) {
-        //     elements[j].classList.remove(`beat${i+2}`);
-        //     elements[j].classList.add(`beat${i+1}`);
+    //     // Classnames
+    //     let elements = Array.from(document.getElementsByClassName(`beat${i+1}`));
+    //     for (let j = 0; j < elements.length; j++) {
+    //         if (!elements[j].id.includes("Button")) {
+    //             elements[j].classList.remove(`beat${i+1}`);
+    //             elements[j].classList.add(`beat${i+2}`);
 
-        //     // Ids
-        //     elements[j].id = `beat${parseInt(elements[j].id[elements[j].id.length-1])-1}`;
-        // }
+    //             // Ids
+    //             elements[j].id = `beat${parseInt(elements[j].id.slice(4))+1}`;
+    //         }
+    //     }
     // }
 
     // Create a beat dot
