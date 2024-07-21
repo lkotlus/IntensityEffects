@@ -94,29 +94,29 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 
 // This is the real add function, the event listener below just makes another event listener.
 let realAddFunction = function(e) {
+    // Remove our event listeners
+    let cycles = document.getElementsByClassName("beatLineWrapper");
+    for (let i = 0; i < cycles.length; i++) {
+        cycles[i].removeEventListener('click', realAddFunction);
+    }
+
+    // If the user clicked on a beat dot, complain
     if (e.target.classList.contains("beatDot")) {
         // TODO: maybe warn the user
-        let cycles = document.getElementsByClassName("beatLineWrapper");
-        for (let i = 0; i < cycles.length; i++) {
-            cycles[i].removeEventListener('click', realAddFunction);
-        }
         e.target.click();
         return null;
     }
 
+    // Get the cycle number
     let cycleNum = parseInt(e.currentTarget.id[e.currentTarget.id.length-1]);
 
+    // Do some math to get the position of the new beat (stolen from StackOverflow)
     let rect = e.currentTarget.getBoundingClientRect();
     let width = e.currentTarget.offsetWidth;
     let x = e.clientX - rect.left;
     let percent = x/width;
 
-    let newBeatDot = document.createElement('span');
-    newBeatDot.classList.add('beatDot');
-    newBeatDot.style.backgroundColor = UNSELECTED_COLOR;
-    newBeatDot.style.left = `${percent*100}%`;
-    e.currentTarget.appendChild(newBeatDot);
-
+    // Create a new beat with everything but the name
     let newBeat = new Beat(0, 0, 0);
     newBeat.t = beatsObj.cl * percent;
     newBeat.fullTime = [newBeat.t + ((cycleNum-1) * beatsObj.cl)];
@@ -124,21 +124,43 @@ let realAddFunction = function(e) {
     newBeat.calcBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
     newBeat.calcOffset(beatsObj.cl, beatsObj.c);
 
-    console.log(newBeat);
-
+    // Append the new beat to the beats array and sort the array (lazy solution, but low risk)
     beatsObj.beats.push(newBeat);
     beatsObj.beats.sort((b1, b2) => {
         return b1.fullTime[0] - b2.fullTime[0];
     })
 
+    // Get the index of the new beat and add the last attribute to our new beat object
     let beatIndex = beatsObj.beats.indexOf(newBeat)
     beatsObj.beats[beatIndex].names = [`beat${beatIndex+1}`];
 
-    let cycles = document.getElementsByClassName("beatLineWrapper");
-    for (let i = 0; i < cycles.length; i++) {
-        cycles[i].removeEventListener('click', realAddFunction);
-    }
+    // Fix other ids/classnames
+    // for (let i = beatsObj.beats.length; i >= beatIndex; i++) {
+        // // Names
+        // for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
+        //     beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j][beatsObj.beats[i].names[j].length-1])-1}`;
+        // }
 
+        // // Classnames
+        // let elements = Array.from(document.getElementsByClassName(`beat${i+2}`));
+        // for (let j = 0; j < elements.length; j++) {
+        //     elements[j].classList.remove(`beat${i+2}`);
+        //     elements[j].classList.add(`beat${i+1}`);
+
+        //     // Ids
+        //     elements[j].id = `beat${parseInt(elements[j].id[elements[j].id.length-1])-1}`;
+        // }
+    // }
+
+    // Create a beat dot
+    let newBeatDot = document.createElement('span');
+    newBeatDot.classList.add('beatDot');
+    newBeatDot.style.backgroundColor = UNSELECTED_COLOR;
+    newBeatDot.style.left = `${percent*100}%`;
+    // newBeatDot.id = `beat${beatIndex+1}`;
+    e.currentTarget.appendChild(newBeatDot);
+
+    // Fix the UI
     selected = [];
     adjustEditUI(selected.length);
 }
