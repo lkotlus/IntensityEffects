@@ -140,8 +140,6 @@ let realAddFunction = function(e) {
 
     // Fix other ids/classnames
     for (let i = beatsObj.beats.length-1; i > beatIndex; i--) {
-        console.log(i);
-
         // Names
         for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
             beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j].slice(4))+1}`;
@@ -151,7 +149,6 @@ let realAddFunction = function(e) {
         let elements = Array.from(document.getElementsByClassName(`beat${i}`));
         for (let j = 0; j < elements.length; j++) {
             if (!elements[j].id.includes("Button")) {
-                // console.log(`beat${i+1} --> beat${i+2}`);
                 elements[j].classList.remove(`beat${i}`);
                 elements[j].classList.add(`beat${i+1}`);
 
@@ -180,11 +177,6 @@ let realAddFunction = function(e) {
 
 // Add button (THIS SUCKS, but you need to do it)
 document.getElementById('add').addEventListener('click', (e) => {
-    // Create beat and calculate id/class numbers
-    // Traditional loop (through Beat objects) starting at calculated id number, increment all ids
-    // Traditional loop (through collapsibles) starting at calculated class number, increment all ids
-    // Insert beat with calculated values
-
     adjustEditUI(-1);
 
     let cycles = document.getElementsByClassName("beatLineWrapper");

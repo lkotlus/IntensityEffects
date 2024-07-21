@@ -425,7 +425,6 @@ let record = function(e) {
                 e.target.blur();
 
                 document.getElementById('expandAll').addEventListener('click', (e) => {
-                    console.log("HEY");
                     for (let i = 0; i < beatsObj.beats.length; i++) {
                         let current = document.getElementById(`beat${i+1}Button`);
                 
@@ -635,7 +634,6 @@ let rerender = function() {
     adjustEditUI(selected.length);
 
     document.getElementById('expandAll').addEventListener('click', (e) => {
-        console.log("HEY");
         for (let i = 0; i < beatsObj.beats.length; i++) {
             let current = document.getElementById(`beat${i+1}Button`);
     
