@@ -108,7 +108,7 @@ let realAddFunction = function(e) {
     }
 
     // Get the cycle number
-    let cycleNum = parseInt(e.currentTarget.id[e.currentTarget.id.length-1]);
+    let cycleNum = parseInt(e.currentTarget.id.slice(5));
 
     // Do some math to get the position of the new beat (stolen from StackOverflow)
     let rect = e.currentTarget.getBoundingClientRect();
@@ -192,7 +192,7 @@ document.getElementById('remove').addEventListener('click', (e) => {
     }
 
     // Get index
-    let index = parseInt(targetClass[targetClass.length-1])-1;
+    let index = parseInt(targetClass.slice(4))-1;
 
     // Remove from beatsObj
     beatsObj.beats.splice(index, 1);
@@ -207,17 +207,19 @@ document.getElementById('remove').addEventListener('click', (e) => {
     for (let i = index; i < beatsObj.beats.length; i++) {        
         // Names
         for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
-            beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j][beatsObj.beats[i].names[j].length-1])-1}`;
+            beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j].slice(4))-1}`;
         }
 
         // Classnames
         let elements = Array.from(document.getElementsByClassName(`beat${i+2}`));
         for (let j = 0; j < elements.length; j++) {
-            elements[j].classList.remove(`beat${i+2}`);
-            elements[j].classList.add(`beat${i+1}`);
+            if (!elements[j].id.includes("Button")) {
+                elements[j].classList.remove(`beat${i+2}`);
+                elements[j].classList.add(`beat${i+1}`);
 
-            // Ids
-            elements[j].id = `beat${parseInt(elements[j].id[elements[j].id.length-1])-1}`;
+                // Ids
+                elements[j].id = `beat${parseInt(elements[j].id.slice(4))-1}`;
+            }
         }
     }
 

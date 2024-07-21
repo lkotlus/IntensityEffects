@@ -611,9 +611,11 @@ let rerender = function() {
     for (let i = 0; i < beatsObj.beats.length; i++) {
         for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
             let oldElement = document.getElementById(beatsObj.beats[i].names[j]);
+            console.log(oldElement);
             let newElement = oldElement.cloneNode(true);
             
             newElement.classList.value = `beatDot beat${i+1}`;
+            console.log(newElement);
             oldElement.parentNode.replaceChild(newElement, oldElement);
         }
     }
