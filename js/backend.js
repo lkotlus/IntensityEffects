@@ -99,16 +99,25 @@ let realAddFunction = function(e) {
         return null;
     }
 
+    let cycleNum = parseInt(e.currentTarget.id[e.currentTarget.id.length-1]);
+
     let rect = e.currentTarget.getBoundingClientRect();
     let width = e.currentTarget.offsetWidth;
     let x = e.clientX - rect.left;
-    let percent = (x/width) * 100;
+    let percent = x/width;
 
     let newBeatDot = document.createElement('span');
     newBeatDot.classList.add('beatDot');
     newBeatDot.style.backgroundColor = UNSELECTED_COLOR;
-    newBeatDot.style.left = `${percent}%`;
+    newBeatDot.style.left = `${percent*100}%`;
     e.currentTarget.appendChild(newBeatDot);
+
+    let newBeat = new Beat(0, 0, 0);
+    newBeat.t = beatsObj.cl * percent;
+    newBeat.fullTime = [newBeat.t + ((cycleNum-1) * beatsObj.cl)];
+    newBeat.occ = [cycleNum-1];
+    newBeat.calcBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
+    newBeat.calcOffset(beatsObj.cl, beatsObj.c);
 
     let cycles = document.getElementsByClassName("beatLineWrapper");
     for (let i = 0; i < cycles.length; i++) {
