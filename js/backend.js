@@ -124,6 +124,16 @@ let realAddFunction = function(e) {
     newBeat.calcBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
     newBeat.calcOffset(beatsObj.cl, beatsObj.c);
 
+    console.log(newBeat);
+
+    beatsObj.beats.push(newBeat);
+    beatsObj.beats.sort((b1, b2) => {
+        return b1.fullTime[0] - b2.fullTime[0];
+    })
+
+    let beatIndex = beatsObj.beats.indexOf(newBeat)
+    beatsObj.beats[beatIndex].names = [`beat${beatIndex+1}`];
+
     let cycles = document.getElementsByClassName("beatLineWrapper");
     for (let i = 0; i < cycles.length; i++) {
         cycles[i].removeEventListener('click', realAddFunction);
