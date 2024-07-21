@@ -13,7 +13,6 @@ document.getElementById('startBtn').addEventListener('click', (e) => {
     e.target.blur();
 
     document.getElementById('expandAll').addEventListener('click', (e) => {
-        console.log("HEY");
         for (let i = 0; i < beatsObj.beats.length; i++) {
             let current = document.getElementById(`beat${i+1}Button`);
     
@@ -93,42 +92,148 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 ////        Edit buttons
 // 
 
-// Add button (THIS SUCKS, PUT IT OFF AS MUCH AS POSSIBLE)
-// document.getElementById('add').addEventListener('click', (e) => {
-//     // Disable other edits
-//     adjustEditUI(-1);
+// This is the real add function, the event listener below just makes another event listener.
+let realAddFunction = function(e) {
+    // Remove our event listeners
+    let cycles = document.getElementsByClassName("beatLineWrapper");
+    for (let i = 0; i < cycles.length; i++) {
+        cycles[i].removeEventListener('click', realAddFunction);
+    }
 
-//     // Get cycle info
-//     cycles = document.getElementsByClassName('beatLineWrapper');
-//     width = cycles[0].clientWidth;
+    // If the user clicked on a beat dot, complain
+    if (e.target.classList.contains("beatDot")) {
+        // TODO: maybe warn the user
+        e.target.click();
+        return null;
+    }
 
-//     let handle = function(e) {
-//         let xCord = e.offsetX;
+    // Get the cycle number
+    let cycleNum = parseInt(e.currentTarget.id.slice(5));
 
-//         if (xCord < 0) {
-//             xCord = 0;
-//         }
+    // Do some math to get the position of the new beat (stolen from StackOverflow)
+    let rect = e.currentTarget.getBoundingClientRect();
+    let width = e.currentTarget.offsetWidth;
+    let x = e.clientX - rect.left;
+    let percent = x/width;
 
-//         let offset = xCord / width;
+    // Create a new beat with everything but the name
+    let newBeat = new Beat(0, 0, 0);
+    newBeat.t = beatsObj.cl * percent;
+    newBeat.fullTime = [newBeat.t + ((cycleNum-1) * beatsObj.cl)];
+    newBeat.occ = [cycleNum-1];
+    newBeat.calcBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
+    newBeat.calcOffset(beatsObj.cl, beatsObj.c);
 
-//         let newBeat = new Beat()
-//     }
+    // Get insertion index, add the last attribute to our new beat object, and insert the new beat
+    let beatIndex;
+    for (let i = 0; i < beatsObj.beats.length; i++) {
+        if (beatsObj.beats[i+1] === undefined) {
+            beatIndex = i+1;
+        }
+        else if ((beatsObj.beats[i].fullTime[0] < newBeat.fullTime[0]) && (beatsObj.beats[i+1].fullTime[0] > newBeat.fullTime[0])) {
+            beatIndex = i+1;
+            break;
+        }
+    }
+    newBeat.names = [`beat${beatIndex+1}`];
+    beatsObj.beats.splice(beatIndex, 0, newBeat);
 
-//     for (let i = 0; i < cycles.length; i++) {
-//         cycles[i].addEventListener('click', handle);
-//     }
-// })
+    // Fix other ids/classnames
+    for (let i = beatsObj.beats.length-1; i > beatIndex; i--) {
+        // Names
+        for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
+            beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j].slice(4))+1}`;
+        }
 
-// Remove button (THIS ALSO SUCKS)
-// document.getElementById('remove').addEventListener('click', (e) => {
-//     for (let i = 0; i < selected.length; i++) {
-//         beatsObj.beats.splice(selected[i]-1-i, 1);
-//     }
+        // Classnames
+        let elements = Array.from(document.getElementsByClassName(`beat${i}`));
+        for (let j = 0; j < elements.length; j++) {
+            if (!elements[j].id.includes("Button")) {
+                elements[j].classList.remove(`beat${i}`);
+                elements[j].classList.add(`beat${i+1}`);
 
-//     rerender();
-// })
+                // Ids
+                elements[j].id = `beat${parseInt(elements[j].id.slice(4))+1}`;
+            }
+        }
+    }
 
-// Edit button
+    // Create a beat dot
+    let newBeatDot = document.createElement('span');
+    newBeatDot.classList.add('beatDot');
+    newBeatDot.classList.add(`beat${beatIndex+1}`)
+    newBeatDot.id = `beat${beatIndex+1}`;
+    newBeatDot.style.backgroundColor = UNSELECTED_COLOR;
+    newBeatDot.style.left = `${percent*100}%`;
+    e.currentTarget.appendChild(newBeatDot);
+
+    // Rerender
+    rerender();
+
+    // Fix the UI
+    selected = [];
+    adjustEditUI(selected.length);
+}
+
+// Add button (THIS SUCKS, but you need to do it)
+document.getElementById('add').addEventListener('click', (e) => {
+    adjustEditUI(-1);
+
+    let cycles = document.getElementsByClassName("beatLineWrapper");
+    for (let i = 0; i < cycles.length; i++) {
+        cycles[i].addEventListener('click', realAddFunction);
+    }
+})
+
+// Remove button (IT ACTUALLY WORKS!!!!!!!)
+document.getElementById('remove').addEventListener('click', (e) => {
+    // Get target class
+    let classList = document.getElementById(`beat${selected[0]}`).classList;
+    let targetClass;
+    for (let i = 0; i < classList.length; i++) {
+        if (classList[i].includes("beat")) {
+            targetClass = classList[i];
+        }
+    }
+
+    // Get index
+    let index = parseInt(targetClass.slice(4))-1;
+
+    // Remove from beatsObj
+    beatsObj.beats.splice(index, 1);
+
+    // Remove from DOM
+    let elements = document.getElementsByClassName(targetClass);
+    while (elements[0]) {
+        elements[0].parentNode.removeChild(elements[0]);
+    }
+
+    // Update names in beatsObj, classnames, and ids
+    for (let i = index; i < beatsObj.beats.length; i++) {        
+        // Names
+        for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
+            beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j].slice(4))-1}`;
+        }
+
+        // Classnames
+        let elements = Array.from(document.getElementsByClassName(`beat${i+2}`));
+        for (let j = 0; j < elements.length; j++) {
+            if (!elements[j].id.includes("Button")) {
+                elements[j].classList.remove(`beat${i+2}`);
+                elements[j].classList.add(`beat${i+1}`);
+
+                // Ids
+                elements[j].id = `beat${parseInt(elements[j].id.slice(4))-1}`;
+            }
+        }
+    }
+
+    selected = [];
+    adjustEditUI(0);
+    rerender();
+})
+
+// Edit offset button
 document.getElementById('editOffset').addEventListener('click', (e) => {
     // Disable other edit buttons while doing this
     adjustEditUI(-1);
@@ -205,6 +310,8 @@ document.getElementById('split').addEventListener('click', (e) => {
     // Concatenate individual beats with the others
     beatsObj.beats = beatsObj.beats.concat(targetBeat.split());
 
+    selected = [];
+
     // rerender
     rerender()
 
@@ -236,6 +343,8 @@ document.getElementById('join').addEventListener('click', (e) => {
     if (newBeat.offset === 0) {
         newBeat.offset = 360;
     }
+
+    selected = [];
 
     // Rerender
     rerender();

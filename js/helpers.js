@@ -184,7 +184,7 @@ let buttonInteract = function(e, secondHand) {
 
         // Get the class name
         for (let i = 0; i < e.target.classList.length; i++) {
-            if (e.target.classList[i].includes("beat")) {
+            if (e.target.classList[i].includes("beat") && !e.target.classList[i].includes("Button")) {
                 className = e.target.classList[i];
             }
         }
@@ -207,27 +207,19 @@ let buttonInteract = function(e, secondHand) {
 // Code for enabling/disabling certain edit buttons
 let adjustEditUI = function(l) {
     let testBeat;
-
-    if (l > 0) {
-        // Copy beat object
-        testBeat = new Beat(0, 0, 0);
-        testBeat.t = beatsObj.beats[selected[0]-1].t
-        testBeat.names = beatsObj.beats[selected[0]-1].names
-        testBeat.fullTime = beatsObj.beats[selected[0]-1].fullTime
-        testBeat.occ = beatsObj.beats[selected[0]-1].occ
-        testBeat.bpm = beatsObj.beats[selected[0]-1].bpm
-        testBeat.offset = beatsObj.beats[selected[0]-1].offset
-
-        // Join them
-        for (let i = 1; i < selected.length; i++) {
-            testBeat.silentJoin(beatsObj.beats[selected[i]-1]);
-        }
-    }
     
     // Two or more beats selected
     if (l >= 2) {
+        // Constructing a spoof beat object of just occurences.
+        testBeat = {occ: []};
+
+        for (let i = 0; i < selected.length; i++) {
+            testBeat.occ = testBeat.occ.concat(beatsObj.beats[selected[i]-1].occ);
+        }
+
         document.getElementById('add').disabled = true;
-        document.getElementById('remove').disabled = false;
+
+        document.getElementById('remove').disabled = true;
         document.getElementById('split').disabled = true;
         document.getElementById('move').disabled = true;
         document.getElementById('editOffset').disabled = true;
@@ -252,7 +244,7 @@ let adjustEditUI = function(l) {
         }
     }
     // No beats selected
-    else if (l === 0) {
+    else if (l === 0 && Object.keys(beatsObj).length !== 0) {
         document.getElementById('add').disabled = false;
         document.getElementById('remove').disabled = true;
         document.getElementById('join').disabled = true;
@@ -338,7 +330,12 @@ let press = function(beats, cl, startTime, i, e) {
         newBeatDot.id = `beat${i}`;
         newBeatDot.style.backgroundColor = UNSELECTED_COLOR;
         newBeatDot.style.left = `${(relativeT/cl) * 100}%`;
-        DOMCycle.appendChild(newBeatDot);
+        if (DOMCycle) {
+            DOMCycle.appendChild(newBeatDot);
+        }
+        else {
+            return null;
+        }
         
         // And finally create and append a new beat to the beats array
         beats[currentCycle].push(new Beat(t, currentCycle, newBeatDot.id));
@@ -428,7 +425,6 @@ let record = function(e) {
                 e.target.blur();
 
                 document.getElementById('expandAll').addEventListener('click', (e) => {
-                    console.log("HEY");
                     for (let i = 0; i < beatsObj.beats.length; i++) {
                         let current = document.getElementById(`beat${i+1}Button`);
                 
@@ -537,10 +533,6 @@ let render = function() {
     // Getting the settings div ready to go, because it's about to get used a lot
     let outputDiv = document.getElementById("outputDiv");
 
-    // Adding an expand/collapse all button
-    // allButtonPt1();
-    // allButtonPt2();
-
     // Looping through things to calculate BPM and offset. Also doing DOM manipulation directly afterwards.
     // NOTE TO SELF: literally never go into front end development, you are very bad at it. (W3Schools CSS tutorial site GET request count for the below code: 9999999999999999999)
     for (let i = 0; i < beatsObj.beats.length; i++) {
@@ -626,7 +618,7 @@ let rerender = function() {
     }
     
     // Clear the output div
-    document.getElementById("outputDiv").innerHTML = "<h2>Output</h2>";
+    document.getElementById("outputDiv").innerHTML = `<h2>Output</h2><div id="allDiv"><button id="expandAll" class="expandCollapseAll button">Expand All</button><button id="collapseAll" class="expandCollapseAll button">Collapse All</button></div>`;
 
     // Re render the information
     render();
@@ -640,4 +632,24 @@ let rerender = function() {
     selected = [];
 
     adjustEditUI(selected.length);
+
+    document.getElementById('expandAll').addEventListener('click', (e) => {
+        for (let i = 0; i < beatsObj.beats.length; i++) {
+            let current = document.getElementById(`beat${i+1}Button`);
+    
+            if (!current.classList.contains("expanded")) {
+                current.click();
+            }
+        }
+    })
+    
+    document.getElementById('collapseAll').addEventListener('click', (e) => {
+        for (let i = 0; i < beatsObj.beats.length; i++) {
+            let current = document.getElementById(`beat${i+1}Button`);
+    
+            if (current.classList.contains("expanded")) {
+                current.click();
+            }
+        }
+    })
 }
