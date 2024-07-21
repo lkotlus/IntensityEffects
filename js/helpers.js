@@ -244,7 +244,7 @@ let adjustEditUI = function(l) {
         }
     }
     // No beats selected
-    else if (l === 0) {
+    else if (l === 0 && Object.keys(beatsObj).length !== 0) {
         document.getElementById('add').disabled = false;
         document.getElementById('remove').disabled = true;
         document.getElementById('join').disabled = true;

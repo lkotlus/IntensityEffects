@@ -128,6 +128,9 @@ let realAddFunction = function(e) {
     for (let i = 0; i < cycles.length; i++) {
         cycles[i].removeEventListener('click', realAddFunction);
     }
+
+    selected = [];
+    adjustEditUI(selected.length);
 }
 
 // Add button (THIS SUCKS, but you need to do it)
@@ -136,6 +139,8 @@ document.getElementById('add').addEventListener('click', (e) => {
     // Traditional loop (through Beat objects) starting at calculated id number, increment all ids
     // Traditional loop (through collapsibles) starting at calculated class number, increment all ids
     // Insert beat with calculated values
+
+    adjustEditUI(-1);
 
     let cycles = document.getElementsByClassName("beatLineWrapper");
     for (let i = 0; i < cycles.length; i++) {
