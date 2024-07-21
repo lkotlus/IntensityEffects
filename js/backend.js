@@ -92,6 +92,30 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 ////        Edit buttons
 // 
 
+// This is the real add function, the event listener below just makes another event listener.
+let realAddFunction = function(e) {
+    if (e.target.classList.contains("beatDot")) {
+        // TODO: maybe warn the user
+        return null;
+    }
+
+    let rect = e.currentTarget.getBoundingClientRect();
+    let width = e.currentTarget.offsetWidth;
+    let x = e.clientX - rect.left;
+    let percent = (x/width) * 100;
+
+    let newBeatDot = document.createElement('span');
+    newBeatDot.classList.add('beatDot');
+    newBeatDot.style.backgroundColor = UNSELECTED_COLOR;
+    newBeatDot.style.left = `${percent}%`;
+    e.currentTarget.appendChild(newBeatDot);
+
+    let cycles = document.getElementsByClassName("beatLineWrapper");
+    for (let i = 0; i < cycles.length; i++) {
+        cycles[i].removeEventListener('click', realAddFunction);
+    }
+}
+
 // Add button (THIS SUCKS, but you need to do it)
 document.getElementById('add').addEventListener('click', (e) => {
     // Create beat and calculate id/class numbers
@@ -99,14 +123,10 @@ document.getElementById('add').addEventListener('click', (e) => {
     // Traditional loop (through collapsibles) starting at calculated class number, increment all ids
     // Insert beat with calculated values
 
-        // Get target class
-        let classList = document.getElementById(`beat${selected[0]}`).classList;
-        let targetClass;
-        for (let i = 0; i < classList.length; i++) {
-            if (classList[i].includes("beat")) {
-                targetClass = classList[i];
-            }
-        }
+    let cycles = document.getElementsByClassName("beatLineWrapper");
+    for (let i = 0; i < cycles.length; i++) {
+        cycles[i].addEventListener('click', realAddFunction);
+    }
 })
 
 // Remove button (IT ACTUALLY WORKS!!!!!!!)
