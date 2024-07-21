@@ -330,7 +330,12 @@ let press = function(beats, cl, startTime, i, e) {
         newBeatDot.id = `beat${i}`;
         newBeatDot.style.backgroundColor = UNSELECTED_COLOR;
         newBeatDot.style.left = `${(relativeT/cl) * 100}%`;
-        DOMCycle.appendChild(newBeatDot);
+        if (DOMCycle) {
+            DOMCycle.appendChild(newBeatDot);
+        }
+        else {
+            return null;
+        }
         
         // And finally create and append a new beat to the beats array
         beats[currentCycle].push(new Beat(t, currentCycle, newBeatDot.id));
