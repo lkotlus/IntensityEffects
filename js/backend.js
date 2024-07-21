@@ -96,6 +96,11 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 let realAddFunction = function(e) {
     if (e.target.classList.contains("beatDot")) {
         // TODO: maybe warn the user
+        let cycles = document.getElementsByClassName("beatLineWrapper");
+        for (let i = 0; i < cycles.length; i++) {
+            cycles[i].removeEventListener('click', realAddFunction);
+        }
+        e.target.click();
         return null;
     }
 
