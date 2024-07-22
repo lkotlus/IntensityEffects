@@ -135,7 +135,20 @@ let realAddFunction = function(e) {
             break;
         }
     }
-    newBeat.names = [`beat${beatIndex+1}`];
+
+    let beatId = 0;
+    for (let i = 0; i < beatIndex; i++) {
+        for (let j = 0; j < beatsObj.beats[i].fullTime.length; j++) {
+            if (beatsObj.beats[i].fullTime[j] < newBeat.fullTime[0]) {
+                beatId++;
+            }
+        }
+    }
+    beatId++;
+
+    console.log(beatId);
+
+    newBeat.names = [`beat${beatId}`];
     beatsObj.beats.splice(beatIndex, 0, newBeat);
 
     // Fix other ids/classnames
@@ -161,8 +174,8 @@ let realAddFunction = function(e) {
     // Create a beat dot
     let newBeatDot = document.createElement('span');
     newBeatDot.classList.add('beatDot');
-    newBeatDot.classList.add(`beat${beatIndex+1}`)
-    newBeatDot.id = `beat${beatIndex+1}`;
+    newBeatDot.classList.add(`beat${beatId}`)
+    newBeatDot.id = `beat${beatId}`;
     newBeatDot.style.backgroundColor = UNSELECTED_COLOR;
     newBeatDot.style.left = `${percent*100}%`;
     e.currentTarget.appendChild(newBeatDot);
@@ -175,7 +188,7 @@ let realAddFunction = function(e) {
     adjustEditUI(selected.length);
 }
 
-// Add button (THIS SUCKS, but you need to do it)
+// Add button (If there are bugs, it probably came from either this or the remove button)
 document.getElementById('add').addEventListener('click', (e) => {
     adjustEditUI(-1);
 
@@ -185,7 +198,7 @@ document.getElementById('add').addEventListener('click', (e) => {
     }
 })
 
-// Remove button (IT ACTUALLY WORKS!!!!!!!)
+// Remove button (See the comment on the add button)
 document.getElementById('remove').addEventListener('click', (e) => {
     // Get target class
     let classList = document.getElementById(`beat${selected[0]}`).classList;
