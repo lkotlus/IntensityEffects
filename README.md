@@ -8,4 +8,4 @@ Creating complex lighting effects that go along with instruments, especially dru
 
 ## Dork section!
 
-The thought behind this project stems from Fourier analysis. Thinking of drums and other instruments with hits that are like the roots of a complex wave makes things much easier to work with. The "roots" are connected based on their occurences and synced together to get the most accurate values possible for effects. Effect settings are calculated and displayed for the user. In all honesty, very little advanced mathematical concepts were used in the project, but they still played a pivetal role.
+The thought behind this project stems from Fourier analysis. Thinking of drums and other instruments with hits that are like the roots of a complex wave makes things much easier to work with. The "roots" are connected based on their occurrences and synced together to get the most accurate values possible for effects. Effect settings are calculated and displayed for the user. In all honesty, very little advanced mathematical concepts were used in the project, but they still played a pivotal role.
