@@ -251,8 +251,12 @@ document.getElementById('editOffset').addEventListener('click', (e) => {
     // Disable other edit buttons while doing this
     adjustEditUI(-1);
 
+    // Get the offset input area
+    let input = document.getElementById(`beat${selected[0]}Offset`);
+
     // Remove the readonly attribute while changing the offset
-    document.getElementById(`beat${selected[0]}Offset`).removeAttribute('readonly');
+    input.removeAttribute('readonly');
+    input.style = "background-color: #595959;border-radius: 5px;";
 
     // Listen for a change in offset
     document.getElementById(`beat${selected[0]}Offset`).addEventListener('change', (e) => {
@@ -261,6 +265,7 @@ document.getElementById('editOffset').addEventListener('click', (e) => {
 
         // Bring back the readonly
         e.target.setAttribute('readonly', 'readonly');
+        e.target.style = "";
 
         rerender();
 
