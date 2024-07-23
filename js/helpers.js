@@ -529,7 +529,7 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
     render();
 }
 
-let render = function(rerender = false) {
+let render = function(moveOrEdit = false) {
     // Getting the settings div ready to go, because it's about to get used a lot
     let outputDiv = document.getElementById("outputDiv");
 
@@ -537,7 +537,7 @@ let render = function(rerender = false) {
     // NOTE TO SELF: literally never go into front end development, you are very bad at it. (W3Schools CSS tutorial site GET request count for the below code: 9999999999999999999)
     for (let i = 0; i < beatsObj.beats.length; i++) {
         // Setting the BPM and offset for the current beat
-        if (!rerender) {
+        if (!moveOrEdit) {
             beatsObj.beats[i].calcBPM(beatsObj.bpm, beatsObj.c, beatsObj.bpc);
             beatsObj.beats[i].calcOffset(beatsObj.cl, beatsObj.c);
         }
@@ -602,7 +602,7 @@ let render = function(rerender = false) {
 }
 
 // Code for re rendering after a change
-let rerender = function() {
+let rerender = function(moveOrEdit = false) {
     // Resort the beats
     beatsObj.beats = beatsObj.beats.sort((b1, b2) => {
         return b1.fullTime[0] - b2.fullTime[0];
@@ -623,7 +623,7 @@ let rerender = function() {
     document.getElementById("outputDiv").innerHTML = `<h2>Output</h2><div id="allDiv"><button id="expandAll" class="expandCollapseAll button">Expand All</button><button id="collapseAll" class="expandCollapseAll button">Collapse All</button></div>`;
 
     // Re render the information
-    render(true);
+    render(moveOrEdit);
 
     // Remove selected items
     let dots = document.getElementsByClassName('beatDot');

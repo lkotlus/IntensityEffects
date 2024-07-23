@@ -267,7 +267,7 @@ document.getElementById('editOffset').addEventListener('click', (e) => {
         e.target.setAttribute('readonly', 'readonly');
         e.target.style = "";
 
-        rerender();
+        rerender(true);
 
         // Bring back the edit buttons
         adjustEditUI(selected.length);
@@ -305,7 +305,7 @@ document.getElementById('move').addEventListener('click', (e) => {
             window.removeEventListener('keydown', enterFunction);
 
             // Rerender
-            rerender();
+            rerender(true);
 
             // Bring back the buttons
             adjustEditUI(selected.length);
