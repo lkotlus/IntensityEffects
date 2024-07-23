@@ -97,6 +97,8 @@ class Beat {
             newCycle.appendChild(dot);
             dot.style.left = `${(this.t / baseLen) * 100}%`;
         }
+
+        this.offset = offset;
     }
 
     // Prints a description of the beat (for debugging)

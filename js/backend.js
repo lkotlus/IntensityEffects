@@ -12,6 +12,8 @@ document.getElementById('startBtn').addEventListener('click', (e) => {
     // Remove keyboard focus
     e.target.blur();
 
+    document.getElementById("instructionsBox").textContent = "Press enter to start recording. While recording, the button will be red and you will be able to hit either shift keys as well as the enter key to record beats.";
+
     document.getElementById('expandAll').addEventListener('click', (e) => {
         for (let i = 0; i < beatsObj.beats.length; i++) {
             let current = document.getElementById(`beat${i+1}Button`);
@@ -94,17 +96,18 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 
 // This is the real add function, the event listener below just makes another event listener.
 let realAddFunction = function(e) {
+    // If the user clicked on a beat dot, complain
+    if (e.target.classList.contains("beatDot")) {
+        document.getElementById("instructionsBox").textContent = "Do not click on other beats. Click anywhere ELSE on the beat lines to add a new beat at that location (quit being goofy).";
+        e.target.click();
+        adjustEditUI(-1);
+        return null;
+    }
+    
     // Remove our event listeners
     let cycles = document.getElementsByClassName("beatLineWrapper");
     for (let i = 0; i < cycles.length; i++) {
         cycles[i].removeEventListener('click', realAddFunction);
-    }
-
-    // If the user clicked on a beat dot, complain
-    if (e.target.classList.contains("beatDot")) {
-        // TODO: maybe warn the user
-        e.target.click();
-        return null;
     }
 
     // Get the cycle number
@@ -135,7 +138,20 @@ let realAddFunction = function(e) {
             break;
         }
     }
-    newBeat.names = [`beat${beatIndex+1}`];
+
+    let beatId = 0;
+    for (let i = 0; i < beatIndex; i++) {
+        for (let j = 0; j < beatsObj.beats[i].fullTime.length; j++) {
+            if (beatsObj.beats[i].fullTime[j] < newBeat.fullTime[0]) {
+                beatId++;
+            }
+        }
+    }
+    beatId++;
+
+    console.log(beatId);
+
+    newBeat.names = [`beat${beatId}`];
     beatsObj.beats.splice(beatIndex, 0, newBeat);
 
     // Fix other ids/classnames
@@ -161,8 +177,8 @@ let realAddFunction = function(e) {
     // Create a beat dot
     let newBeatDot = document.createElement('span');
     newBeatDot.classList.add('beatDot');
-    newBeatDot.classList.add(`beat${beatIndex+1}`)
-    newBeatDot.id = `beat${beatIndex+1}`;
+    newBeatDot.classList.add(`beat${beatId}`)
+    newBeatDot.id = `beat${beatId}`;
     newBeatDot.style.backgroundColor = UNSELECTED_COLOR;
     newBeatDot.style.left = `${percent*100}%`;
     e.currentTarget.appendChild(newBeatDot);
@@ -173,10 +189,14 @@ let realAddFunction = function(e) {
     // Fix the UI
     selected = [];
     adjustEditUI(selected.length);
+
+    document.getElementById("instructionsBox").textContent = "Click on either beat dots or collapsibles to read and edit output.";
 }
 
-// Add button (THIS SUCKS, but you need to do it)
+// Add button (If there are bugs, it probably came from either this or the remove button)
 document.getElementById('add').addEventListener('click', (e) => {
+    document.getElementById("instructionsBox").textContent = "Click anywhere on the beat lines to add a new beat at that location.";
+
     adjustEditUI(-1);
 
     let cycles = document.getElementsByClassName("beatLineWrapper");
@@ -185,7 +205,7 @@ document.getElementById('add').addEventListener('click', (e) => {
     }
 })
 
-// Remove button (IT ACTUALLY WORKS!!!!!!!)
+// Remove button (See the comment on the add button)
 document.getElementById('remove').addEventListener('click', (e) => {
     // Get target class
     let classList = document.getElementById(`beat${selected[0]}`).classList;
@@ -235,11 +255,17 @@ document.getElementById('remove').addEventListener('click', (e) => {
 
 // Edit offset button
 document.getElementById('editOffset').addEventListener('click', (e) => {
+    document.getElementById("instructionsBox").textContent = "Edit the offset value and then hit enter.";
+
     // Disable other edit buttons while doing this
     adjustEditUI(-1);
 
+    // Get the offset input area
+    let input = document.getElementById(`beat${selected[0]}Offset`);
+
     // Remove the readonly attribute while changing the offset
-    document.getElementById(`beat${selected[0]}Offset`).removeAttribute('readonly');
+    input.removeAttribute('readonly');
+    input.style = "background-color: #595959;border-radius: 5px;";
 
     // Listen for a change in offset
     document.getElementById(`beat${selected[0]}Offset`).addEventListener('change', (e) => {
@@ -248,16 +274,21 @@ document.getElementById('editOffset').addEventListener('click', (e) => {
 
         // Bring back the readonly
         e.target.setAttribute('readonly', 'readonly');
+        e.target.style = "";
 
-        rerender();
+        rerender(true);
 
         // Bring back the edit buttons
         adjustEditUI(selected.length);
+
+        document.getElementById("instructionsBox").textContent = "Click on either beat dots or collapsibles to read and edit output.";
     }, {once: true})
 })
 
 // Move button
 document.getElementById('move').addEventListener('click', (e) => {
+    document.getElementById("instructionsBox").textContent = "Press the left and right arrows on the keyboard to move the selected beat. Press enter when you are finished.";
+
     // Temporarily remove the edit buttons
     adjustEditUI(-1);
 
@@ -287,10 +318,12 @@ document.getElementById('move').addEventListener('click', (e) => {
             window.removeEventListener('keydown', enterFunction);
 
             // Rerender
-            rerender();
+            rerender(true);
 
             // Bring back the buttons
             adjustEditUI(selected.length);
+
+            document.getElementById("instructionsBox").textContent = "Click on either beat dots or collapsibles to read and edit output.";
         }
     }
 
