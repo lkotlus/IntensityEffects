@@ -413,7 +413,7 @@ let record = function(e) {
             // Call the postRecording() function to continue the program
             postRecording(beats, bpm, c, bpc, sl, bi, cl, tol);
 
-            document.getElementById("instructionsBox").textContent = "Click on either beat dots or collapsibles to read and edit output.";
+            document.getElementById("instructionsBox").textContent = "Click on either hits or collapsibles to read and edit output.";
 
             // Recreating that event listener for the start button
             document.getElementById('startBtn').addEventListener('click', (e) => {
@@ -424,7 +424,7 @@ let record = function(e) {
                 adjustEditUI(selected.length)
                 document.getElementById('startBtn').style.background = "#6dc163";
                 document.addEventListener('keydown', record);
-                document.getElementById("instructionsBox").textContent = "Press enter to start recording. While recording, the button will be red and you will be able to hit either shift keys as well as the enter key to record beats.";
+                document.getElementById("instructionsBox").textContent = "Press enter to start recording. While recording, the button will be red and you will be able to hit either shift keys as well as the enter key to record hits.";
                 e.target.blur();
 
                 document.getElementById('expandAll').addEventListener('click', (e) => {
