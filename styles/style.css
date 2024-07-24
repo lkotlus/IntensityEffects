@@ -283,3 +283,19 @@ input:read-only {
     padding: 10px;
     font-size: 1.5em;
 }
+
+#wikibox {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 10px;
+    font-size: 1.5em;
+}
+
+:link {
+    color: #e35400;
+}
+
+:visited {
+    color: #e35400;
+}
