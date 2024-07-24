@@ -553,7 +553,7 @@ let render = function(moveOrEdit = false) {
         newInnerWrapper.classList.add("innerWrapper");
 
         let newP = document.createElement("div");
-        newP.textContent = `Beat ${i+1}`;
+        newP.textContent = `Hit ${i+1}`;
         newP.classList.add("beatLabel");
 
         // Creating a new button for the collapsible of the current beat
