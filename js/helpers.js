@@ -222,7 +222,7 @@ let adjustEditUI = function(l) {
         document.getElementById('remove').disabled = true;
         document.getElementById('split').disabled = true;
         document.getElementById('move').disabled = true;
-        document.getElementById('editOffset').disabled = true;
+        // document.getElementById('editOffset').disabled = true;
 
         if (isValid(testBeat, beatsObj.c)) {
             document.getElementById('join').disabled = false;
@@ -234,7 +234,7 @@ let adjustEditUI = function(l) {
         document.getElementById('remove').disabled = false;
         document.getElementById('join').disabled = true;
         document.getElementById('move').disabled = false;
-        document.getElementById('editOffset').disabled = false;
+        // document.getElementById('editOffset').disabled = false;
 
         if (beatsObj.beats[selected[0]-1].occ.length > 1) {
             document.getElementById('split').disabled = false;
@@ -250,7 +250,7 @@ let adjustEditUI = function(l) {
         document.getElementById('join').disabled = true;
         document.getElementById('split').disabled = true;
         document.getElementById('move').disabled = true;
-        document.getElementById('editOffset').disabled = true;
+        // document.getElementById('editOffset').disabled = true;
     }
     // Intentionally turn everything off
     else {
@@ -259,7 +259,7 @@ let adjustEditUI = function(l) {
         document.getElementById('join').disabled = true;
         document.getElementById('split').disabled = true;
         document.getElementById('move').disabled = true;
-        document.getElementById('editOffset').disabled = true;
+        // document.getElementById('editOffset').disabled = true;
     }
 }
 
