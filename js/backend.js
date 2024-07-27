@@ -253,37 +253,37 @@ document.getElementById('remove').addEventListener('click', (e) => {
     rerender();
 })
 
-// Edit offset button
-document.getElementById('editOffset').addEventListener('click', (e) => {
-    document.getElementById("instructionsBox").textContent = "Edit the offset value and then hit enter.";
+// Edit offset button (deprecated)
+// document.getElementById('editOffset').addEventListener('click', (e) => {
+//     document.getElementById("instructionsBox").textContent = "Edit the offset value and then hit enter.";
 
-    // Disable other edit buttons while doing this
-    adjustEditUI(-1);
+//     // Disable other edit buttons while doing this
+//     adjustEditUI(-1);
 
-    // Get the offset input area
-    let input = document.getElementById(`beat${selected[0]}Offset`);
+//     // Get the offset input area
+//     let input = document.getElementById(`beat${selected[0]}Offset`);
 
-    // Remove the readonly attribute while changing the offset
-    input.removeAttribute('readonly');
-    input.style = "background-color: #595959;border-radius: 5px;";
+//     // Remove the readonly attribute while changing the offset
+//     input.removeAttribute('readonly');
+//     input.style = "background-color: #595959;border-radius: 5px;";
 
-    // Listen for a change in offset
-    document.getElementById(`beat${selected[0]}Offset`).addEventListener('change', (e) => {
-        // Once detected, implement the change in the backend
-        beatsObj.beats[selected[0]-1].setOffset(parseFloat(e.target.value), beatsObj.cl, beatsObj.c);
+//     // Listen for a change in offset
+//     document.getElementById(`beat${selected[0]}Offset`).addEventListener('change', (e) => {
+//         // Once detected, implement the change in the backend
+//         beatsObj.beats[selected[0]-1].setOffset(parseFloat(e.target.value), beatsObj.cl, beatsObj.c);
 
-        // Bring back the readonly
-        e.target.setAttribute('readonly', 'readonly');
-        e.target.style = "";
+//         // Bring back the readonly
+//         e.target.setAttribute('readonly', 'readonly');
+//         e.target.style = "";
 
-        rerender(true);
+//         rerender(true);
 
-        // Bring back the edit buttons
-        adjustEditUI(selected.length);
+//         // Bring back the edit buttons
+//         adjustEditUI(selected.length);
 
-        document.getElementById("instructionsBox").textContent = "Click on either hits or collapsibles to read and edit output.";
-    }, {once: true})
-})
+//         document.getElementById("instructionsBox").textContent = "Click on either hits or collapsibles to read and edit output.";
+//     }, {once: true})
+// })
 
 // Move button
 document.getElementById('move').addEventListener('click', (e) => {
