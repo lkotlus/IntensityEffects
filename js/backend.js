@@ -140,9 +140,10 @@ let realAddFunction = function(e) {
     }
 
     let beatId = 0;
-    for (let i = 0; i < beatIndex; i++) {
+    for (let i = 0; i < beatsObj.beats.length; i++) {
         for (let j = 0; j < beatsObj.beats[i].fullTime.length; j++) {
             if (beatsObj.beats[i].fullTime[j] < newBeat.fullTime[0]) {
+                console.log("hey");
                 beatId++;
             }
         }
@@ -152,22 +153,29 @@ let realAddFunction = function(e) {
     newBeat.names = [`beat${beatId}`];
     beatsObj.beats.splice(beatIndex, 0, newBeat);
 
+    console.log(beatIndex);
+
     // Fix other ids/classnames
-    for (let i = beatsObj.beats.length-1; i > beatIndex; i--) {
+    for (let i = beatsObj.beats.length-1; i >= 0; i--) {
+        console.log(i);
+
         // Names
         for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
-            beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j].slice(4))+1}`;
+            if (beatsObj.beats[i].fullTime[j] > newBeat.fullTime[0]) {
+                let old = beatsObj.beats[i].names[j];
+                beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j].slice(4))+1}`;
+                document.getElementById(old).id = beatsObj.beats[i].names[j];
+            }
         }
 
-        // Classnames
-        let elements = Array.from(document.getElementsByClassName(`beat${i}`));
-        for (let j = 0; j < elements.length; j++) {
-            if (!elements[j].id.includes("Button")) {
-                elements[j].classList.remove(`beat${i}`);
-                elements[j].classList.add(`beat${i+1}`);
-
-                // Ids
-                elements[j].id = `beat${parseInt(elements[j].id.slice(4))+1}`;
+        if (i > beatIndex) {
+            // Classnames
+            let elements = Array.from(document.getElementsByClassName(`beat${i}`));
+            for (let j = 0; j < elements.length; j++) {
+                if (!elements[j].id.includes("Button")) {
+                    elements[j].classList.remove(`beat${i}`);
+                    elements[j].classList.add(`beat${i+1}`);
+                }
             }
         }
     }
