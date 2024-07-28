@@ -149,8 +149,6 @@ let realAddFunction = function(e) {
     }
     beatId++;
 
-    console.log(beatId);
-
     newBeat.names = [`beat${beatId}`];
     beatsObj.beats.splice(beatIndex, 0, newBeat);
 
@@ -215,9 +213,6 @@ document.getElementById('remove').addEventListener('click', (e) => {
             targetClass = classList[i];
         }
     }
-
-    console.log(classList);
-    console.log(targetClass);
 
     // Get index
     let index = parseInt(targetClass.slice(4))-1;
