@@ -208,13 +208,16 @@ document.getElementById('add').addEventListener('click', (e) => {
 // Remove button (See the comment on the add button)
 document.getElementById('remove').addEventListener('click', (e) => {
     // Get target class
-    let classList = document.getElementById(`beat${selected[0]}`).classList;
+    let classList = document.getElementById(beatsObj.beats[selected[0]-1].names[0]).classList;
     let targetClass;
     for (let i = 0; i < classList.length; i++) {
         if (classList[i].includes("beat")) {
             targetClass = classList[i];
         }
     }
+
+    console.log(classList);
+    console.log(targetClass);
 
     // Get index
     let index = parseInt(targetClass.slice(4))-1;
