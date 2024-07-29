@@ -225,6 +225,9 @@ document.getElementById('remove').addEventListener('click', (e) => {
     // Get index
     let index = parseInt(targetClass.slice(4))-1;
 
+    // Save the old beat
+    let oldBeat = beatsObj.beats[index];
+
     // Remove from beatsObj
     beatsObj.beats.splice(index, 1);
 
@@ -235,7 +238,7 @@ document.getElementById('remove').addEventListener('click', (e) => {
     }
 
     // Update names in beatsObj, classnames, and ids
-    for (let i = index; i < beatsObj.beats.length; i++) {        
+    for (let i = editIndex; i < beatsObj.beats.length; i++) {        
         // Names
         for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
             beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j].slice(4))-1}`;
