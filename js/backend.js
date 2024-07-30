@@ -155,7 +155,7 @@ const realAddFunction = function(e) {
 
     console.log(beatIndex);
 
-    // Fix other ids/classnames
+    // Fix other ids and names
     for (let i = beatsObj.beats.length-1; i >= 0; i--) {
         console.log(i);
 
