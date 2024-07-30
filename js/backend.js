@@ -241,22 +241,18 @@ document.getElementById('remove').addEventListener('click', (e) => {
         elements[0].parentNode.removeChild(elements[0]);
     }
 
-    // Update names in beatsObj, classnames, and ids
-    for (let i = editIndex; i < beatsObj.beats.length; i++) {        
-        // Names
-        for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
-            beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j].slice(4))-1}`;
-        }
+    // This whole thing is fucking ridiculous
+    for (let i = 0; i < oldBeat.fullTime.length; i++) {
+        for (let j = 0; j < beatsObj.beats.length; j++) {
+            for (let k = 0; k < beatsObj.beats[j].fullTime.length; k++) {
+                if (oldBeat.fullTime[i] < beatsObj.beats[j].fullTime[k]) {
+                    // Name and id stuff
+                    let oldId = beatsObj.beats[j].names[k];
+                    let newId = `beat${parseInt(beatsObj.beats[j].names[k].slice(4))-1}`;
 
-        // Classnames
-        let elements = Array.from(document.getElementsByClassName(`beat${i+2}`));
-        for (let j = 0; j < elements.length; j++) {
-            if (!elements[j].id.includes("Button")) {
-                elements[j].classList.remove(`beat${i+2}`);
-                elements[j].classList.add(`beat${i+1}`);
-
-                // Ids
-                elements[j].id = `beat${parseInt(elements[j].id.slice(4))-1}`;
+                    beatsObj.beats[j].names[k] = newId;
+                    document.getElementById(oldId).id = newId;
+                }
             }
         }
     }
