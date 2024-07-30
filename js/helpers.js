@@ -274,7 +274,7 @@ const beatInteraction = function(n) {
         if (items[i].classList.contains('beatDot')) {
             // Add a particular event listener
             items[i].addEventListener('click', (e) => {
-                if (ALLOW_SELECTION) {
+                if (allow_selection) {
                     if (dotInteract(e, false)) {
                         selected.push(n);
                     }
@@ -289,7 +289,7 @@ const beatInteraction = function(n) {
         else {
             // Add a different one if it's a button
             items[i].addEventListener('click', (e) => {
-                if (ALLOW_SELECTION) {
+                if (allow_selection) {
                     if (buttonInteract(e, false)) {
                         selected.push(n);
                     }

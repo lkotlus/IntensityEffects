@@ -117,6 +117,6 @@ class Beat {
 // Globals/constants
 let beatsObj = {};
 let selected = [];
-let ALLOW_SELECTION = true;
+let allow_selection = true;
 const UNSELECTED_COLOR = "rgb(193, 193, 193)";
 const SELECTED_COLOR = "rgb(227, 84, 0)";

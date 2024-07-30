@@ -196,14 +196,14 @@ const realAddFunction = function(e) {
     selected = [];
     adjustEditUI(selected.length);
 
-    ALLOW_SELECTION = true;
+    allow_selection = true;
 
     document.getElementById("instructionsBox").textContent = "Click on either hits or collapsibles to read and edit output.";
 }
 
 // Add button (If there are bugs, it probably came from either this or the remove button)
 document.getElementById('add').addEventListener('click', (e) => {
-    ALLOW_SELECTION = false;
+    allow_selection = false;
 
     document.getElementById("instructionsBox").textContent = "Click anywhere on the lines to add a new hit at that location.";
 
@@ -300,7 +300,7 @@ document.getElementById('remove').addEventListener('click', (e) => {
 
 // Move button
 document.getElementById('move').addEventListener('click', (e) => {
-    ALLOW_SELECTION = false;
+    allow_selection = false;
     
     document.getElementById("instructionsBox").textContent = "Press the left and right arrows on the keyboard to move the selected hit. Press enter when you are finished.";
 
@@ -338,7 +338,7 @@ document.getElementById('move').addEventListener('click', (e) => {
             // Bring back the buttons
             adjustEditUI(selected.length);
 
-            ALLOW_SELECTION = true;
+            allow_selection = true;
 
             document.getElementById("instructionsBox").textContent = "Click on either hits or collapsibles to read and edit output.";
         }
