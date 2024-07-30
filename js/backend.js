@@ -167,17 +167,6 @@ const realAddFunction = function(e) {
                 document.getElementById(old).id = beatsObj.beats[i].names[j];
             }
         }
-
-        if (i > beatIndex) {
-            // Classnames
-            let elements = Array.from(document.getElementsByClassName(`beat${i}`));
-            for (let j = 0; j < elements.length; j++) {
-                if (!elements[j].id.includes("Button")) {
-                    elements[j].classList.remove(`beat${i}`);
-                    elements[j].classList.add(`beat${i+1}`);
-                }
-            }
-        }
     }
 
     // Create a beat dot
