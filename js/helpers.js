@@ -1,7 +1,7 @@
 'use strict'
 
 // Converts all times in the beats array to be relative to their respective cycle start time
-let adjustTimes = function(arr, cl) {
+const adjustTimes = function(arr, cl) {
     // Loop through the array
     for (let i = 0; i < arr.length; i++) {
         // Loop through each array in the array
@@ -15,7 +15,7 @@ let adjustTimes = function(arr, cl) {
 }
 
 // Just a handy function for math
-let isClose = function(b1, b2, tol) {
+const isClose = function(b1, b2, tol) {
     // We consider two numbers, a and b, to be "close" relative to a tolerance, t, if it satisfies the following:    |a-b| < t
     //     ^
     //     |
@@ -27,7 +27,7 @@ let isClose = function(b1, b2, tol) {
 }
 
 // Checks the uniformity of a beats occurences
-let isUniform = function(occ, nc) {
+const isUniform = function(occ, nc) {
     if (occ.length === 1) {
         return true;
     }
@@ -49,7 +49,7 @@ let isUniform = function(occ, nc) {
     return true;
 }
 
-let isValid = function(b, nc) {
+const isValid = function(b, nc) {
     if (nc % b.occ.length === 0 && isUniform(b.occ.sort((a, b) => a - b), nc)) {
         return true;
     }
@@ -58,7 +58,7 @@ let isValid = function(b, nc) {
 }
 
 // Binary search implementation with isClose()
-let binSearch = function(b, arr, tol) {
+const binSearch = function(b, arr, tol) {
     // Setting up variables for start, end, and mid
     let start = 0;
     let end = arr.length-1;
@@ -99,7 +99,7 @@ let binSearch = function(b, arr, tol) {
 }
 
 // Quickly getting the insert location for a beat such that they are in order
-let insertLoaction = function(b, arr) {
+const insertLoaction = function(b, arr) {
     // Base case schenaniganery
     if (b.t < arr[0].t) {
         return 0;
@@ -119,7 +119,7 @@ let insertLoaction = function(b, arr) {
 }
 
 // Interact with beat dot
-let dotInteract = function(e, secondHand) {
+const dotInteract = function(e, secondHand) {
     // Assume selected is true
     let selected = true;
 
@@ -162,7 +162,7 @@ let dotInteract = function(e, secondHand) {
 }
 
 // Interact with button
-let buttonInteract = function(e, secondHand) {
+const buttonInteract = function(e, secondHand) {
     // Assume selected is true, confirmed later
     let selected = true;
 
@@ -205,7 +205,7 @@ let buttonInteract = function(e, secondHand) {
 }
 
 // Code for enabling/disabling certain edit buttons
-let adjustEditUI = function(l) {
+const adjustEditUI = function(l) {
     let testBeat;
     
     // Two or more beats selected
@@ -264,7 +264,7 @@ let adjustEditUI = function(l) {
 }
 
 // Code for interacting with beats
-let beatInteraction = function(n) {
+const beatInteraction = function(n) {
     // Get all elements with the correct class name
     let items = document.getElementsByClassName(`beat${n}`);
 
@@ -273,8 +273,8 @@ let beatInteraction = function(n) {
         // If it's a dot...
         if (items[i].classList.contains('beatDot')) {
             // Add a particular event listener
-            if (ALLOW_SELECTION) {
-                items[i].addEventListener('click', (e) => {
+            items[i].addEventListener('click', (e) => {
+                if (allow_selection) {
                     if (dotInteract(e, false)) {
                         selected.push(n);
                     }
@@ -283,13 +283,13 @@ let beatInteraction = function(n) {
                     }
 
                     adjustEditUI(selected.length);
-                })
-            }
+                }
+            })
         }
         else {
             // Add a different one if it's a button
-            if (ALLOW_SELECTION) {
-                items[i].addEventListener('click', (e) => {
+            items[i].addEventListener('click', (e) => {
+                if (allow_selection) {
                     if (buttonInteract(e, false)) {
                         selected.push(n);
                     }
@@ -298,14 +298,14 @@ let beatInteraction = function(n) {
                     }
 
                     adjustEditUI(selected.length);
-                })
-            }
+                }
+            })
         }
     }
 }
 
 // Restricting values for offset
-let offsetChange = function(e) {
+const offsetChange = function(e) {
     if (parseInt(e.target.value) > 360) {
         e.target.value = '360';
     }
@@ -315,7 +315,7 @@ let offsetChange = function(e) {
 }
 
 // Records a press
-let press = function(beats, cl, startTime, i, e) {
+const press = function(beats, cl, startTime, i, e) {
     // If a shift or enter is pressed...
     if (e.keyCode === 16 || e.keyCode === 13) {
         // Get the time it was pressed at and calculate the current cycle
@@ -343,7 +343,7 @@ let press = function(beats, cl, startTime, i, e) {
 }
 
 // Recording function... duh
-let record = function(e) {
+const record = function(e) {
     if (e.keyCode === 13) {
         // Creating an empty array for our beats
         let beats = [];
@@ -452,7 +452,7 @@ let record = function(e) {
 }
 
 // Executes after time intervals are recorded, basically just continues the program after being called from a setTimeout()
-let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
+const postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
     // Making times relative to respective cycles rather than to the start of the first cycle
     adjustTimes(beats, cl);
 
@@ -532,7 +532,7 @@ let postRecording = function(beats, bpm, c, bpc, sl, bi, cl, tol) {
     render();
 }
 
-let render = function(moveOrEdit = false) {
+const render = function(moveOrEdit = false) {
     // Getting the settings div ready to go, because it's about to get used a lot
     let outputDiv = document.getElementById("outputDiv");
 
@@ -605,7 +605,7 @@ let render = function(moveOrEdit = false) {
 }
 
 // Code for re rendering after a change
-let rerender = function(moveOrEdit = false) {
+const rerender = function(moveOrEdit = false) {
     // Resort the beats
     beatsObj.beats = beatsObj.beats.sort((b1, b2) => {
         return b1.fullTime[0] - b2.fullTime[0];

@@ -95,7 +95,7 @@ document.getElementById('importButton').addEventListener('change', async (e) => 
 // 
 
 // This is the real add function, the event listener below just makes another event listener.
-let realAddFunction = function(e) {
+const realAddFunction = function(e) {
     // If the user clicked on a beat dot, complain
     if (e.target.classList.contains("beatDot")) {
         document.getElementById("instructionsBox").textContent = "Do not click on other hits. Click anywhere ELSE on the lines to add a new hit at that location (quit being goofy).";
@@ -140,36 +140,31 @@ let realAddFunction = function(e) {
     }
 
     let beatId = 0;
-    for (let i = 0; i < beatIndex; i++) {
+    for (let i = 0; i < beatsObj.beats.length; i++) {
         for (let j = 0; j < beatsObj.beats[i].fullTime.length; j++) {
             if (beatsObj.beats[i].fullTime[j] < newBeat.fullTime[0]) {
+                console.log("hey");
                 beatId++;
             }
         }
     }
     beatId++;
 
-    console.log(beatId);
-
     newBeat.names = [`beat${beatId}`];
     beatsObj.beats.splice(beatIndex, 0, newBeat);
 
-    // Fix other ids/classnames
-    for (let i = beatsObj.beats.length-1; i > beatIndex; i--) {
+    console.log(beatIndex);
+
+    // Fix other ids and names
+    for (let i = beatsObj.beats.length-1; i >= 0; i--) {
+        console.log(i);
+
         // Names
         for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
-            beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j].slice(4))+1}`;
-        }
-
-        // Classnames
-        let elements = Array.from(document.getElementsByClassName(`beat${i}`));
-        for (let j = 0; j < elements.length; j++) {
-            if (!elements[j].id.includes("Button")) {
-                elements[j].classList.remove(`beat${i}`);
-                elements[j].classList.add(`beat${i+1}`);
-
-                // Ids
-                elements[j].id = `beat${parseInt(elements[j].id.slice(4))+1}`;
+            if (beatsObj.beats[i].fullTime[j] > newBeat.fullTime[0]) {
+                let old = beatsObj.beats[i].names[j];
+                beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j].slice(4))+1}`;
+                document.getElementById(old).id = beatsObj.beats[i].names[j];
             }
         }
     }
@@ -190,11 +185,15 @@ let realAddFunction = function(e) {
     selected = [];
     adjustEditUI(selected.length);
 
+    allow_selection = true;
+
     document.getElementById("instructionsBox").textContent = "Click on either hits or collapsibles to read and edit output.";
 }
 
 // Add button (If there are bugs, it probably came from either this or the remove button)
 document.getElementById('add').addEventListener('click', (e) => {
+    allow_selection = false;
+
     document.getElementById("instructionsBox").textContent = "Click anywhere on the lines to add a new hit at that location.";
 
     adjustEditUI(-1);
@@ -208,7 +207,7 @@ document.getElementById('add').addEventListener('click', (e) => {
 // Remove button (See the comment on the add button)
 document.getElementById('remove').addEventListener('click', (e) => {
     // Get target class
-    let classList = document.getElementById(`beat${selected[0]}`).classList;
+    let classList = document.getElementById(beatsObj.beats[selected[0]-1].names[0]).classList;
     let targetClass;
     for (let i = 0; i < classList.length; i++) {
         if (classList[i].includes("beat")) {
@@ -219,6 +218,9 @@ document.getElementById('remove').addEventListener('click', (e) => {
     // Get index
     let index = parseInt(targetClass.slice(4))-1;
 
+    // Save the old beat
+    let oldBeat = beatsObj.beats[index];
+
     // Remove from beatsObj
     beatsObj.beats.splice(index, 1);
 
@@ -228,22 +230,18 @@ document.getElementById('remove').addEventListener('click', (e) => {
         elements[0].parentNode.removeChild(elements[0]);
     }
 
-    // Update names in beatsObj, classnames, and ids
-    for (let i = index; i < beatsObj.beats.length; i++) {        
-        // Names
-        for (let j = 0; j < beatsObj.beats[i].names.length; j++) {
-            beatsObj.beats[i].names[j] = `beat${parseInt(beatsObj.beats[i].names[j].slice(4))-1}`;
-        }
+    // This whole thing is fucking ridiculous
+    for (let i = 0; i < oldBeat.fullTime.length; i++) {
+        for (let j = 0; j < beatsObj.beats.length; j++) {
+            for (let k = 0; k < beatsObj.beats[j].fullTime.length; k++) {
+                if (oldBeat.fullTime[i] < beatsObj.beats[j].fullTime[k]) {
+                    // Name and id stuff
+                    let oldId = beatsObj.beats[j].names[k];
+                    let newId = `beat${parseInt(beatsObj.beats[j].names[k].slice(4))-1}`;
 
-        // Classnames
-        let elements = Array.from(document.getElementsByClassName(`beat${i+2}`));
-        for (let j = 0; j < elements.length; j++) {
-            if (!elements[j].id.includes("Button")) {
-                elements[j].classList.remove(`beat${i+2}`);
-                elements[j].classList.add(`beat${i+1}`);
-
-                // Ids
-                elements[j].id = `beat${parseInt(elements[j].id.slice(4))-1}`;
+                    beatsObj.beats[j].names[k] = newId;
+                    document.getElementById(oldId).id = newId;
+                }
             }
         }
     }
@@ -287,6 +285,8 @@ document.getElementById('remove').addEventListener('click', (e) => {
 
 // Move button
 document.getElementById('move').addEventListener('click', (e) => {
+    allow_selection = false;
+    
     document.getElementById("instructionsBox").textContent = "Press the left and right arrows on the keyboard to move the selected hit. Press enter when you are finished.";
 
     // Temporarily remove the edit buttons
@@ -322,6 +322,8 @@ document.getElementById('move').addEventListener('click', (e) => {
 
             // Bring back the buttons
             adjustEditUI(selected.length);
+
+            allow_selection = true;
 
             document.getElementById("instructionsBox").textContent = "Click on either hits or collapsibles to read and edit output.";
         }

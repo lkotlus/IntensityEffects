@@ -71,6 +71,9 @@ class Beat {
         let fullLen = baseLen * (nc/this.occ.length);
         let ratio = this.fullTime[0]/fullLen;
         this.offset = Math.abs((360 - (360 * ratio)).toFixed(2));
+        if (this.offset === 0) {
+            this.offset = 360;
+        }
     }
 
     // Sets custom offset from user input
@@ -98,6 +101,10 @@ class Beat {
             dot.style.left = `${(this.t / baseLen) * 100}%`;
         }
 
+        if (offset === 0) {
+            offset = 360;
+        }
+
         this.offset = offset;
     }
 
@@ -110,6 +117,6 @@ class Beat {
 // Globals/constants
 let beatsObj = {};
 let selected = [];
-let ALLOW_SELECTION = true;
-let UNSELECTED_COLOR = "rgb(193, 193, 193)";
-let SELECTED_COLOR = "rgb(227, 84, 0)";
+let allow_selection = true;
+const UNSELECTED_COLOR = "rgb(193, 193, 193)";
+const SELECTED_COLOR = "rgb(227, 84, 0)";
