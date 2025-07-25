@@ -14,7 +14,7 @@ document.getElementById('startBtn').addEventListener('click', (e) => {
 
     document.getElementById("instructionsBox").textContent = "Press enter to start recording. While recording, the button will be red and you will be able to hit either shift keys as well as the enter key to record hits.";
 
-    document.getElementById('expandAll').addEventListener('click', (e) => {
+    document.getElementById('expandAll').addEventListener('click', (_e) => {
         for (let i = 0; i < beatsObj.beats.length; i++) {
             let current = document.getElementById(`beat${i+1}Button`);
     
@@ -24,7 +24,7 @@ document.getElementById('startBtn').addEventListener('click', (e) => {
         }
     })
     
-    document.getElementById('collapseAll').addEventListener('click', (e) => {
+    document.getElementById('collapseAll').addEventListener('click', (_e) => {
         for (let i = 0; i < beatsObj.beats.length; i++) {
             let current = document.getElementById(`beat${i+1}Button`);
     
@@ -36,7 +36,7 @@ document.getElementById('startBtn').addEventListener('click', (e) => {
 }, /*Only executes once*/ {once: true})
 
 // Exporting stuff
-document.getElementById('exportButton').addEventListener('click', (e) => {
+document.getElementById('exportButton').addEventListener('click', (_e) => {
     // File contents are JSON text of the beatsObj
     let fileContents = JSON.stringify(beatsObj);
 
@@ -191,7 +191,7 @@ const realAddFunction = function(e) {
 }
 
 // Add button (If there are bugs, it probably came from either this or the remove button)
-document.getElementById('add').addEventListener('click', (e) => {
+document.getElementById('add').addEventListener('click', (_e) => {
     allow_selection = false;
 
     document.getElementById("instructionsBox").textContent = "Click anywhere on the lines to add a new hit at that location.";
@@ -205,7 +205,7 @@ document.getElementById('add').addEventListener('click', (e) => {
 })
 
 // Remove button (See the comment on the add button)
-document.getElementById('remove').addEventListener('click', (e) => {
+document.getElementById('remove').addEventListener('click', (_e) => {
     // Get target class
     let classList = document.getElementById(beatsObj.beats[selected[0]-1].names[0]).classList;
     let targetClass;
@@ -284,7 +284,7 @@ document.getElementById('remove').addEventListener('click', (e) => {
 // })
 
 // Move button
-document.getElementById('move').addEventListener('click', (e) => {
+document.getElementById('move').addEventListener('click', (_e) => {
     allow_selection = false;
     
     document.getElementById("instructionsBox").textContent = "Press the left and right arrows on the keyboard to move the selected hit. Press enter when you are finished.";
@@ -335,7 +335,7 @@ document.getElementById('move').addEventListener('click', (e) => {
 })
 
 // Split button
-document.getElementById('split').addEventListener('click', (e) => {
+document.getElementById('split').addEventListener('click', (_e) => {
     // Get our target beat
     let targetBeat = beatsObj.beats[selected[0]-1];
     
@@ -355,7 +355,7 @@ document.getElementById('split').addEventListener('click', (e) => {
 })
 
 // Join button
-document.getElementById('join').addEventListener('click', (e) => {
+document.getElementById('join').addEventListener('click', (_e) => {
     // Making sure order is kept later on
     selected = selected.sort((a, b) => {
         return a - b;

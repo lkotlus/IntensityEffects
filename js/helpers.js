@@ -427,7 +427,7 @@ const record = function(e) {
                 document.getElementById("instructionsBox").textContent = "Press enter to start recording. While recording, the button will be red and you will be able to hit either shift keys as well as the enter key to record hits.";
                 e.target.blur();
 
-                document.getElementById('expandAll').addEventListener('click', (e) => {
+                document.getElementById('expandAll').addEventListener('click', (_e) => {
                     for (let i = 0; i < beatsObj.beats.length; i++) {
                         let current = document.getElementById(`beat${i+1}Button`);
                 
@@ -437,7 +437,7 @@ const record = function(e) {
                     }
                 })
                 
-                document.getElementById('collapseAll').addEventListener('click', (e) => {
+                document.getElementById('collapseAll').addEventListener('click', (_e) => {
                     for (let i = 0; i < beatsObj.beats.length; i++) {
                         let current = document.getElementById(`beat${i+1}Button`);
                 
@@ -638,7 +638,7 @@ const rerender = function(moveOrEdit = false) {
 
     adjustEditUI(selected.length);
 
-    document.getElementById('expandAll').addEventListener('click', (e) => {
+    document.getElementById('expandAll').addEventListener('click', (_e) => {
         for (let i = 0; i < beatsObj.beats.length; i++) {
             let current = document.getElementById(`beat${i+1}Button`);
     
@@ -648,7 +648,7 @@ const rerender = function(moveOrEdit = false) {
         }
     })
     
-    document.getElementById('collapseAll').addEventListener('click', (e) => {
+    document.getElementById('collapseAll').addEventListener('click', (_e) => {
         for (let i = 0; i < beatsObj.beats.length; i++) {
             let current = document.getElementById(`beat${i+1}Button`);
     
